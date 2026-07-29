@@ -4,7 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/home/footer";
-
+import { Toaster } from "react-hot-toast";
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
 const geistSans = Geist({
@@ -36,6 +36,13 @@ export default function RootLayout({
         <div>
           <Navbar/>
         </div>
+          <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 3000,
+        }}
+          />
         {children}
         <Footer/>
       </body>
