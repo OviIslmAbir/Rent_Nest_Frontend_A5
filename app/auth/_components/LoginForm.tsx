@@ -45,7 +45,6 @@ export default function LoginForm() {
             className="w-full bg-transparent outline-none text-slate-900 dark:text-white placeholder:text-slate-400 text-sm pr-2"
           />
           <button
-            type="button"
             onClick={() => setShowPassword(!showPassword)}
             className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
           >

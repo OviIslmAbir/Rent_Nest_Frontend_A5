@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Menu, 
   UserCircle, 
-  Sparkles, 
   LogOut, 
   LayoutDashboard, 
   User, 
@@ -14,7 +13,8 @@ import {
   ArrowRight
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -64,7 +64,7 @@ export default function Navbar() {
           </span>
         </Link>
 
-
+        {/* Desktop Navigation Links */}
         <nav className="hidden lg:flex items-center gap-1.5">
           {navLinks.map((item, index) => (
             <Link
@@ -91,74 +91,73 @@ export default function Navbar() {
           ))}
         </nav>
 
+        {/* Desktop Action Buttons */}
         <div className="hidden items-center gap-4 lg:flex">
           {!isLoggedIn ? (
             <>
-              <Link href="/auth/login">
-                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                  <Button
-                    variant="ghost"
-                    className="h-11 rounded-2xl border border-slate-200/80 bg-white/50 px-6 text-base font-semibold text-slate-700 shadow-sm transition-all duration-300 hover:border-blue-300 hover:bg-blue-50/60 hover:text-blue-600 hover:shadow"
-                  >
-                    Login
-                  </Button>
-                </motion.div>
-              </Link>
-
-
-              <Link href="/auth/register">
-                <motion.div
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.96 }}
-                  className="relative group rounded-2xl p-[1.5px] transition-all duration-300"
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <Link
+                  href="/auth/login"
+                  className={cn(
+                    buttonVariants({ variant: "ghost" }),
+                    "h-11 rounded-2xl border border-slate-200/80 bg-white/50 px-6 text-base font-semibold text-slate-700 shadow-sm transition-all duration-300 hover:border-blue-300 hover:bg-blue-50/60 hover:text-blue-600 hover:shadow"
+                  )}
                 >
+                  Login
+                </Link>
+              </motion.div>
 
-                  <span className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-400 opacity-70 blur-md transition-all duration-300 group-hover:opacity-100 group-hover:blur-lg" />
-                  
-                  <Button className="relative h-11 overflow-hidden flex items-center gap-2.5 rounded-[14px] bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 px-7 text-base font-bold text-white shadow-lg border-0 transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(37,99,235,0.5)]">
-
-                    <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-out" />
-
-                    <span className="relative z-10 tracking-wide">Get Started</span>
-                    <ArrowRight className="relative z-10 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" />
-                  </Button>
-                </motion.div>
-              </Link>
+              <motion.div
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                className="relative group rounded-2xl p-[1.5px] transition-all duration-300"
+              >
+                <span className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-400 opacity-70 blur-md transition-all duration-300 group-hover:opacity-100 group-hover:blur-lg" />
+                
+                <Link
+                  href="/auth/register"
+                  className={cn(
+                    buttonVariants(),
+                    "relative h-11 overflow-hidden flex items-center gap-2.5 rounded-[14px] bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 px-7 text-base font-bold text-white shadow-lg border-0 transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(37,99,235,0.5)]"
+                  )}
+                >
+                  <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-out" />
+                  <span className="relative z-10 tracking-wide">Get Started</span>
+                  <ArrowRight className="relative z-10 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" />
+                </Link>
+              </motion.div>
             </>
           ) : (
-
             <DropdownMenu>
-              <DropdownMenuTrigger >
-                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                  <Button
-                    variant="outline"
-                    className="group h-11 rounded-2xl border border-slate-200/90 bg-white/90 px-6 text-base font-semibold text-slate-800 shadow-sm backdrop-blur-sm transition-all duration-300 hover:border-blue-400 hover:bg-blue-50/50 hover:text-blue-600 hover:shadow-md"
-                  >
-                    <UserCircle className="mr-2 h-5 w-5 text-blue-600 transition-transform duration-300 group-hover:scale-110" />
-                    Account
-                    <ChevronDown className="ml-2 h-4 w-4 text-slate-400 transition-transform duration-200 group-data-[state=open]:rotate-180" />
-                  </Button>
-                </motion.div>
+              <DropdownMenuTrigger
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "group h-11 rounded-2xl border border-slate-200/90 bg-white/90 px-6 text-base font-semibold text-slate-800 shadow-sm backdrop-blur-sm transition-all duration-300 hover:border-blue-400 hover:bg-blue-50/50 hover:text-blue-600 hover:shadow-md"
+                )}
+              >
+                <UserCircle className="mr-2 h-5 w-5 text-blue-600 transition-transform duration-300 group-hover:scale-110" />
+                Account
+                <ChevronDown className="ml-2 h-4 w-4 text-slate-400 transition-transform duration-200 group-data-[state=open]:rotate-180" />
               </DropdownMenuTrigger>
 
               <DropdownMenuContent
                 align="end"
                 className="w-56 rounded-2xl border border-slate-100 bg-white/95 p-2 text-slate-800 shadow-2xl backdrop-blur-xl"
               >
-                <DropdownMenuItem >
+                <DropdownMenuItem className="p-0">
                   <Link
                     href="/dashboard"
-                    className="flex cursor-pointer items-center gap-2.5 rounded-xl px-3.5 py-3 text-sm font-semibold transition-all hover:bg-blue-50/80 hover:text-blue-600"
+                    className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3.5 py-3 text-sm font-semibold transition-all hover:bg-blue-50/80 hover:text-blue-600"
                   >
                     <LayoutDashboard className="h-4.5 w-4.5 text-blue-600" />
                     Dashboard
                   </Link>
                 </DropdownMenuItem>
 
-                <DropdownMenuItem >
+                <DropdownMenuItem className="p-0">
                   <Link
                     href="/profile"
-                    className="flex cursor-pointer items-center gap-2.5 rounded-xl px-3.5 py-3 text-sm font-semibold transition-all hover:bg-blue-50/80 hover:text-indigo-600"
+                    className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3.5 py-3 text-sm font-semibold transition-all hover:bg-blue-50/80 hover:text-indigo-600"
                   >
                     <User className="h-4.5 w-4.5 text-indigo-600" />
                     Profile
@@ -179,17 +178,16 @@ export default function Navbar() {
           )}
         </div>
 
-
+        {/* Mobile Menu */}
         <div className="lg:hidden">
           <Sheet>
-            <SheetTrigger>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-11 w-11 rounded-2xl border-slate-200 bg-white text-slate-700 hover:border-blue-400 hover:bg-slate-50 hover:text-blue-600"
-              >
-                <Menu className="h-6 w-6" />
-              </Button>
+            <SheetTrigger
+              className={cn(
+                buttonVariants({ variant: "outline", size: "icon" }),
+                "h-11 w-11 rounded-2xl border-slate-200 bg-white text-slate-700 hover:border-blue-400 hover:bg-slate-50 hover:text-blue-600"
+              )}
+            >
+              <Menu className="h-6 w-6" />
             </SheetTrigger>
 
             <SheetContent
@@ -225,20 +223,25 @@ export default function Navbar() {
 
                 {!isLoggedIn ? (
                   <div className="flex flex-col gap-3.5">
-                    <Link href="/auth/login">
-                      <Button
-                        variant="outline"
-                        className="h-12 w-full justify-center rounded-2xl border-slate-200 bg-white text-base font-semibold text-slate-800 hover:bg-slate-50"
-                      >
-                        Login
-                      </Button>
+                    <Link
+                      href="/auth/login"
+                      className={cn(
+                        buttonVariants({ variant: "outline" }),
+                        "h-12 w-full justify-center rounded-2xl border-slate-200 bg-white text-base font-semibold text-slate-800 hover:bg-slate-50"
+                      )}
+                    >
+                      Login
                     </Link>
 
-                    <Link href="/auth/register">
-                      <Button className="h-12 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-base font-bold text-white shadow-md">
-                        <span>Get Started</span>
-                        <ArrowRight className="h-5 w-5" />
-                      </Button>
+                    <Link
+                      href="/auth/register"
+                      className={cn(
+                        buttonVariants(),
+                        "h-12 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-base font-bold text-white shadow-md"
+                      )}
+                    >
+                      <span>Get Started</span>
+                      <ArrowRight className="h-5 w-5" />
                     </Link>
                   </div>
                 ) : (

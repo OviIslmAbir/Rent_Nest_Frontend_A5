@@ -64,7 +64,6 @@ export default function RegisterForm() {
             className="w-full bg-transparent outline-none text-slate-900 placeholder:text-slate-400 text-sm pr-2"
           />
           <button
-            type="button"
             onClick={() => setShowPassword(!showPassword)}
             className="text-slate-400 hover:text-slate-600 transition-colors"
           >
@@ -85,7 +84,6 @@ export default function RegisterForm() {
             className="w-full bg-transparent outline-none text-slate-900 placeholder:text-slate-400 text-sm pr-2"
           />
           <button
-            type="button"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             className="text-slate-400 hover:text-slate-600 transition-colors"
           >
