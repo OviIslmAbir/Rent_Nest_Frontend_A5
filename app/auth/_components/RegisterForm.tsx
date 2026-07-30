@@ -50,7 +50,7 @@ export default function RegisterForm() {
       transition={{ duration: 0.4 }}
       className="space-y-5 w-full max-w-md mx-auto"
     >
-      {/* Name */}
+
 
       <div className="space-y-1.5">
         <label className="text-sm font-medium text-slate-700">
@@ -70,7 +70,7 @@ export default function RegisterForm() {
         </div>
       </div>
 
-      {/* Email */}
+
 
       <div className="space-y-1.5">
         <label className="text-sm font-medium text-slate-700">
@@ -90,7 +90,7 @@ export default function RegisterForm() {
         </div>
       </div>
 
-      {/* Password */}
+   
 
       <div className="space-y-1.5">
         <label className="text-sm font-medium text-slate-700">
@@ -122,7 +122,7 @@ export default function RegisterForm() {
         </div>
       </div>
 
-      {/* Role */}
+
 
       <div className="space-y-1.5">
         <label className="text-sm font-medium text-slate-700">
@@ -141,7 +141,7 @@ export default function RegisterForm() {
         </div>
       </div>
 
-      {/* Terms */}
+
 
       <div className="flex items-center gap-2 pt-1">
         <input
@@ -172,7 +172,7 @@ export default function RegisterForm() {
         </label>
       </div>
 
-      {/* Submit */}
+
 
       <Button
         type="submit"

@@ -49,14 +49,13 @@ export default function Navbar({ isLoggedIn = false, userRole = "TENANT" }: Navb
       />
 
       <div className="container mx-auto flex h-20 items-center justify-between px-6">
-        {/* Brand Logo */}
         <Link href="/" className="group flex items-center gap-2.5">
           <span className="bg-gradient-to-r from-slate-900 via-blue-950 to-blue-600 bg-clip-text text-2xl font-extrabold tracking-wider text-transparent">
             RENT<span className="text-blue-600">NEST</span>
           </span>
         </Link>
 
-        {/* Desktop Links */}
+
         <nav className="hidden lg:flex items-center gap-1.5">
           {navLinks.map((item, index) => (
             <Link
@@ -83,7 +82,7 @@ export default function Navbar({ isLoggedIn = false, userRole = "TENANT" }: Navb
           ))}
         </nav>
 
-        {/* Desktop Action / User */}
+
         <div className="hidden items-center gap-4 lg:flex">
           {!isLoggedIn ? (
             <>
@@ -113,7 +112,6 @@ export default function Navbar({ isLoggedIn = false, userRole = "TENANT" }: Navb
           )}
         </div>
 
-        {/* Mobile Hamburger Menu */}
         <div className="lg:hidden">
           <Sheet>
             <SheetTrigger

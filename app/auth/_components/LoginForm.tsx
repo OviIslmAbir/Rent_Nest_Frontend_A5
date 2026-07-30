@@ -32,7 +32,7 @@ export default function LoginForm() {
 
     if (state.success) {
       toast.success(state.message || "Login Successful");
-
+      router.refresh();
       setTimeout(() => {
         switch (state.role) {
           case "TENANT":
@@ -64,7 +64,7 @@ export default function LoginForm() {
       transition={{ duration: 0.4 }}
       className="space-y-6 w-full max-w-md mx-auto"
     >
-      {/* Email */}
+
 
       <div className="space-y-2">
         <label className="text-sm font-medium text-slate-700">
@@ -84,7 +84,7 @@ export default function LoginForm() {
         </div>
       </div>
 
-      {/* Password */}
+
 
       <div className="space-y-2">
         <label className="text-sm font-medium text-slate-700">
@@ -116,7 +116,7 @@ export default function LoginForm() {
         </div>
       </div>
 
-      {/* Remember */}
+
 
       <div className="flex items-center justify-between text-sm">
         <label className="flex items-center gap-2 text-slate-600 cursor-pointer">
@@ -132,7 +132,7 @@ export default function LoginForm() {
         </Link>
       </div>
 
-      {/* Login Button */}
+
 
       <Button
         type="submit"
@@ -152,7 +152,7 @@ export default function LoginForm() {
         )}
       </Button>
 
-      {/* Register */}
+
 
       <p className="text-center text-sm text-slate-500">
         Don&apos;t have an account?{" "}
