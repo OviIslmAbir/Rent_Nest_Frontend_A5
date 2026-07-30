@@ -3,24 +3,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Menu, 
-  UserCircle, 
-  LogOut, 
-  LayoutDashboard, 
-  User, 
-  ChevronDown,
-  ArrowRight
-} from "lucide-react";
+import { Menu, ArrowRight } from "lucide-react";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 
 import {
   Sheet,
@@ -29,6 +16,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import UserMenu from "./UserMenu";
 
 const navLinks = [
   { title: "Home", href: "/" },
@@ -37,13 +25,17 @@ const navLinks = [
   { title: "Contact", href: "/contact" },
 ];
 
-export default function Navbar() {
-  const isLoggedIn = false;
+interface NavbarProps {
+  isLoggedIn?: boolean;
+  userRole?: string;
+}
+
+export default function Navbar({ isLoggedIn = false, userRole = "TENANT" }: NavbarProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200/60 bg-white/75 backdrop-blur-md transition-all duration-300">
-      <motion.div 
+      <motion.div
         animate={{
           opacity: [0.3, 0.7, 0.3],
           scaleX: [0.85, 1, 0.85],
@@ -51,20 +43,20 @@ export default function Navbar() {
         transition={{
           duration: 4,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: "easeInOut",
         }}
-        className="absolute inset-x-0 bottom-0 h-[1.5px] bg-gradient-to-r from-transparent via-blue-500 to-transparent" 
+        className="absolute inset-x-0 bottom-0 h-[1.5px] bg-gradient-to-r from-transparent via-blue-500 to-transparent"
       />
 
       <div className="container mx-auto flex h-20 items-center justify-between px-6">
-        
+        {/* Brand Logo */}
         <Link href="/" className="group flex items-center gap-2.5">
           <span className="bg-gradient-to-r from-slate-900 via-blue-950 to-blue-600 bg-clip-text text-2xl font-extrabold tracking-wider text-transparent">
             RENT<span className="text-blue-600">NEST</span>
           </span>
         </Link>
 
-        {/* Desktop Navigation Links */}
+        {/* Desktop Links */}
         <nav className="hidden lg:flex items-center gap-1.5">
           {navLinks.map((item, index) => (
             <Link
@@ -91,94 +83,37 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Desktop Action Buttons */}
+        {/* Desktop Action / User */}
         <div className="hidden items-center gap-4 lg:flex">
           {!isLoggedIn ? (
             <>
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                <Link
-                  href="/auth/login"
-                  className={cn(
-                    buttonVariants({ variant: "ghost" }),
-                    "h-11 rounded-2xl border border-slate-200/80 bg-white/50 px-6 text-base font-semibold text-slate-700 shadow-sm transition-all duration-300 hover:border-blue-300 hover:bg-blue-50/60 hover:text-blue-600 hover:shadow"
-                  )}
-                >
-                  Login
-                </Link>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
-                className="relative group rounded-2xl p-[1.5px] transition-all duration-300"
-              >
-                <span className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-400 opacity-70 blur-md transition-all duration-300 group-hover:opacity-100 group-hover:blur-lg" />
-                
-                <Link
-                  href="/auth/register"
-                  className={cn(
-                    buttonVariants(),
-                    "relative h-11 overflow-hidden flex items-center gap-2.5 rounded-[14px] bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 px-7 text-base font-bold text-white shadow-lg border-0 transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(37,99,235,0.5)]"
-                  )}
-                >
-                  <span className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-out" />
-                  <span className="relative z-10 tracking-wide">Get Started</span>
-                  <ArrowRight className="relative z-10 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" />
-                </Link>
-              </motion.div>
-            </>
-          ) : (
-            <DropdownMenu>
-              <DropdownMenuTrigger
+              <Link
+                href="/auth/login"
                 className={cn(
-                  buttonVariants({ variant: "outline" }),
-                  "group h-11 rounded-2xl border border-slate-200/90 bg-white/90 px-6 text-base font-semibold text-slate-800 shadow-sm backdrop-blur-sm transition-all duration-300 hover:border-blue-400 hover:bg-blue-50/50 hover:text-blue-600 hover:shadow-md"
+                  buttonVariants({ variant: "ghost" }),
+                  "h-11 rounded-2xl border border-slate-200/80 bg-white/50 px-6 text-base font-semibold text-slate-700 shadow-sm hover:border-blue-300 hover:bg-blue-50/60 hover:text-blue-600"
                 )}
               >
-                <UserCircle className="mr-2 h-5 w-5 text-blue-600 transition-transform duration-300 group-hover:scale-110" />
-                Account
-                <ChevronDown className="ml-2 h-4 w-4 text-slate-400 transition-transform duration-200 group-data-[state=open]:rotate-180" />
-              </DropdownMenuTrigger>
+                Login
+              </Link>
 
-              <DropdownMenuContent
-                align="end"
-                className="w-56 rounded-2xl border border-slate-100 bg-white/95 p-2 text-slate-800 shadow-2xl backdrop-blur-xl"
+              <Link
+                href="/auth/register"
+                className={cn(
+                  buttonVariants(),
+                  "h-11 flex items-center gap-2.5 rounded-[14px] bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 px-7 text-base font-bold text-white shadow-lg border-0 transition-all"
+                )}
               >
-                <DropdownMenuItem className="p-0">
-                  <Link
-                    href="/dashboard"
-                    className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3.5 py-3 text-sm font-semibold transition-all hover:bg-blue-50/80 hover:text-blue-600"
-                  >
-                    <LayoutDashboard className="h-4.5 w-4.5 text-blue-600" />
-                    Dashboard
-                  </Link>
-                </DropdownMenuItem>
-
-                <DropdownMenuItem className="p-0">
-                  <Link
-                    href="/profile"
-                    className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3.5 py-3 text-sm font-semibold transition-all hover:bg-blue-50/80 hover:text-indigo-600"
-                  >
-                    <User className="h-4.5 w-4.5 text-indigo-600" />
-                    Profile
-                  </Link>
-                </DropdownMenuItem>
-
-                <div className="my-1 border-t border-slate-100" />
-
-                <DropdownMenuItem
-                  onClick={() => console.log("Logout")}
-                  className="flex cursor-pointer items-center gap-2.5 rounded-xl px-3.5 py-3 text-sm font-semibold text-rose-600 transition-all hover:bg-rose-50 hover:text-rose-700"
-                >
-                  <LogOut className="h-4.5 w-4.5" />
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                <span>Get Started</span>
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+            </>
+          ) : (
+            <UserMenu role={userRole} />
           )}
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Hamburger Menu */}
         <div className="lg:hidden">
           <Sheet>
             <SheetTrigger
@@ -203,20 +138,14 @@ export default function Navbar() {
               </SheetHeader>
 
               <div className="mt-8 flex flex-col gap-3.5">
-                {navLinks.map((item, idx) => (
-                  <motion.div
+                {navLinks.map((item) => (
+                  <Link
                     key={item.title}
-                    initial={{ x: -15, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.05 * idx }}
+                    href={item.href}
+                    className="block rounded-xl px-3.5 py-3 text-lg font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-600"
                   >
-                    <Link
-                      href={item.href}
-                      className="block rounded-xl px-3.5 py-3 text-lg font-medium text-slate-700 transition-colors hover:bg-slate-100 hover:text-blue-600"
-                    >
-                      {item.title}
-                    </Link>
-                  </motion.div>
+                    {item.title}
+                  </Link>
                 ))}
 
                 <div className="my-2 border-t border-slate-100" />
@@ -225,57 +154,26 @@ export default function Navbar() {
                   <div className="flex flex-col gap-3.5">
                     <Link
                       href="/auth/login"
-                      className={cn(
-                        buttonVariants({ variant: "outline" }),
-                        "h-12 w-full justify-center rounded-2xl border-slate-200 bg-white text-base font-semibold text-slate-800 hover:bg-slate-50"
-                      )}
+                      className="flex h-12 w-full items-center justify-center rounded-2xl border border-slate-200 bg-white text-base font-semibold text-slate-800 hover:bg-slate-50"
                     >
                       Login
                     </Link>
 
                     <Link
                       href="/auth/register"
-                      className={cn(
-                        buttonVariants(),
-                        "h-12 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-base font-bold text-white shadow-md"
-                      )}
+                      className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-base font-bold text-white shadow-md"
                     >
                       <span>Get Started</span>
                       <ArrowRight className="h-5 w-5" />
                     </Link>
                   </div>
                 ) : (
-                  <div className="flex flex-col gap-2.5">
-                    <Link
-                      href="/dashboard"
-                      className="flex items-center gap-3 rounded-xl px-3.5 py-3 text-base font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-600"
-                    >
-                      <LayoutDashboard className="h-5 w-5 text-blue-600" />
-                      Dashboard
-                    </Link>
-
-                    <Link
-                      href="/profile"
-                      className="flex items-center gap-3 rounded-xl px-3.5 py-3 text-base font-medium text-slate-700 hover:bg-slate-100 hover:text-blue-600"
-                    >
-                      <User className="h-5 w-5 text-indigo-600" />
-                      Profile
-                    </Link>
-
-                    <button
-                      onClick={() => console.log("Logout")}
-                      className="flex items-center gap-3 rounded-xl px-3.5 py-3 text-left text-base font-medium text-rose-600 hover:bg-rose-50 hover:text-rose-700"
-                    >
-                      <LogOut className="h-5 w-5" />
-                      Logout
-                    </button>
-                  </div>
+                  <UserMenu role={userRole} />
                 )}
               </div>
             </SheetContent>
           </Sheet>
         </div>
-
       </div>
     </header>
   );

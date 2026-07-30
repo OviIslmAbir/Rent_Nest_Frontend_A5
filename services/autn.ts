@@ -1,0 +1,12 @@
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
+
+export async function getCurrentUser() {
+  const cookieStore = await cookies();
+
+  const token = cookieStore.get("accessToken")?.value;
+
+  if (!token) return null;
+
+  return jwt.decode(token);
+}
