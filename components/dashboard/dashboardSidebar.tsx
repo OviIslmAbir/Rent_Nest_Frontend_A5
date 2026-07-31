@@ -11,9 +11,8 @@ import {
   Users,
   User,
   ArrowLeft,
-  Sparkles,
+  PlusCircle,
 } from "lucide-react";
-
 
 type UserRole = "TENANT" | "LANDLORD" | "ADMIN";
 
@@ -23,52 +22,47 @@ interface MenuItem {
   icon: React.ElementType;
 }
 
-interface RoleMenu {
-  role: UserRole;
-  items: MenuItem[];
-}
+export default function DashboardSidebar({ userRole }: { userRole?: UserRole }) {
+  const pathname = usePathname();
 
-const menu: RoleMenu[] = [
-  {
-    role: "TENANT",
-    items: [
+  let detectedRole: UserRole = "TENANT";
+  if (pathname.startsWith("/dashboard/landlord")) {
+    detectedRole = "LANDLORD";
+  } else if (pathname.startsWith("/dashboard/admin")) {
+    detectedRole = "ADMIN";
+  } else if (pathname.startsWith("/dashboard/tenant")) {
+    detectedRole = "TENANT";
+  }
+
+  const activeRole: UserRole = userRole || detectedRole;
+
+  const menu: Record<UserRole, MenuItem[]> = {
+    TENANT: [
       { name: "Dashboard", href: "/dashboard/tenant", icon: LayoutDashboard },
       { name: "Rental Requests", href: "/dashboard/tenant/requests", icon: Home },
       { name: "Payments", href: "/dashboard/tenant/payments", icon: CreditCard },
       { name: "Reviews", href: "/dashboard/tenant/reviews", icon: Star },
-      { name: "Profile", href: "/dashboard/profile", icon: User },
+      { name: "Profile", href: "/dashboard/tenant/profile", icon: User },
     ],
-  },
-  {
-    role: "LANDLORD",
-    items: [
+    LANDLORD: [
       { name: "Dashboard", href: "/dashboard/landlord", icon: LayoutDashboard },
-      { name: "Properties", href: "/dashboard/landlord/properties", icon: Building2 },
+      { name: "Add Property", href: "/dashboard/landlord/properties/new", icon: PlusCircle }, // <-- Add Property Option Added
       { name: "Rental Requests", href: "/dashboard/landlord/requests", icon: Home },
-      { name: "Profile", href: "/dashboard/profile", icon: User },
+      { name: "Profile", href: "/dashboard/landlord/profile", icon: User },
     ],
-  },
-  {
-    role: "ADMIN",
-    items: [
+    ADMIN: [
       { name: "Dashboard", href: "/dashboard/admin", icon: LayoutDashboard },
       { name: "Users", href: "/dashboard/admin/users", icon: Users },
       { name: "Properties", href: "/dashboard/admin/properties", icon: Building2 },
       { name: "Rentals", href: "/dashboard/admin/rentals", icon: Home },
-      { name: "Profile", href: "/dashboard/profile", icon: User },
+      { name: "Profile", href: "/dashboard/admin/profile", icon: User },
     ],
-  },
-];
+  };
 
-export default function DashboardSidebar({ userRole = "TENANT" }: { userRole?: UserRole }) {
-  const pathname = usePathname();
-
-
-  const currentMenu = menu.find((item) => item.role === userRole)?.items || [];
+  const currentMenu = menu[activeRole] || menu.TENANT;
 
   return (
     <aside className="fixed left-0 top-0 flex h-screen w-72 flex-col justify-between border-r border-slate-100 bg-white/80 backdrop-blur-xl shadow-xl shadow-slate-200/50 z-50">
-
       <div>
         <div className="flex items-center justify-between p-6 pb-4">
           <Link href="/" className="flex items-center gap-2.5 group">
@@ -77,7 +71,7 @@ export default function DashboardSidebar({ userRole = "TENANT" }: { userRole?: U
                 RENTNEST
               </h2>
               <p className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
-                {userRole} PANEL
+                {activeRole} PANEL
               </p>
             </div>
           </Link>
@@ -87,11 +81,18 @@ export default function DashboardSidebar({ userRole = "TENANT" }: { userRole?: U
           <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
         </div>
 
-
         <nav className="p-4 space-y-1.5">
           {currentMenu.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname === item.href;
+
+            const isRootDashboard =
+              item.href === "/dashboard/tenant" ||
+              item.href === "/dashboard/landlord" ||
+              item.href === "/dashboard/admin";
+
+            const isActive = isRootDashboard
+              ? pathname === item.href
+              : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
             return (
               <Link
@@ -103,7 +104,6 @@ export default function DashboardSidebar({ userRole = "TENANT" }: { userRole?: U
                     : "text-slate-600 hover:bg-slate-50 hover:text-blue-600"
                 }`}
               >
-
                 {isActive && (
                   <span className="absolute -left-4 top-1/2 h-6 w-1.5 -translate-y-1/2 rounded-r-full bg-blue-600" />
                 )}
@@ -123,9 +123,7 @@ export default function DashboardSidebar({ userRole = "TENANT" }: { userRole?: U
         </nav>
       </div>
 
-   
       <div className="p-4 space-y-3">
-
         <Link
           href="/"
           className="flex items-center justify-center gap-2 w-full rounded-2xl border border-slate-200/80 bg-slate-50/50 px-4 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 hover:shadow-sm group"
@@ -136,10 +134,11 @@ export default function DashboardSidebar({ userRole = "TENANT" }: { userRole?: U
           />
           <span>Back to Home</span>
         </Link>
-     <div className="rounded-2xl bg-gradient-to-b from-slate-50 to-slate-100/80 p-3.5 border border-slate-100/80 text-center">
+
+        <div className="rounded-2xl bg-gradient-to-b from-slate-50 to-slate-100/80 p-3.5 border border-slate-100/80 text-center">
           <p className="text-xs text-slate-500 font-medium">Logged in as</p>
           <span className="inline-block mt-0.5 rounded-full bg-blue-100/80 px-3 py-0.5 text-[11px] font-bold text-blue-700">
-            {userRole}
+            {activeRole}
           </span>
         </div>
       </div>

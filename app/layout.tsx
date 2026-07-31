@@ -26,7 +26,6 @@ export const metadata: Metadata = {
   description: "Rental Property Platform",
 };
 
-
 export type UserRole = "TENANT" | "LANDLORD" | "ADMIN";
 
 interface CustomJwtPayload {
@@ -44,7 +43,6 @@ export default async function RootLayout({
   const token = cookieStore.get("accessToken")?.value;
 
   let isLoggedIn = false;
-
   let userRole: UserRole = "TENANT";
 
   if (token) {
@@ -63,6 +61,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={cn(
         "h-full",
         geistSans.variable,
@@ -70,7 +69,7 @@ export default async function RootLayout({
         inter.variable
       )}
     >
-      <body className="min-h-screen">
+      <body className="min-h-screen" suppressHydrationWarning>
         <LayoutWrapper isLoggedIn={isLoggedIn} userRole={userRole}>
           {children}
         </LayoutWrapper>

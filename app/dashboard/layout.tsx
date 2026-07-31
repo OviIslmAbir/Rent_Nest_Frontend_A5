@@ -17,7 +17,7 @@ export default function DashboardLayout({
         <div className="flex-1 min-h-screen lg:ml-72">
           <DashboardHeader  />
 
-          <main className="p-6">
+          <main className="p-6" >
             {children}
           </main>
         </div>
