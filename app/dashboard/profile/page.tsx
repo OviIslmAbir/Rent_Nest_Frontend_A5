@@ -52,19 +52,18 @@ export default async function ProfilePage() {
 
   return (
     <main className="min-h-screen bg-slate-50/80 text-slate-800 py-12 px-4 sm:px-6 relative">
-      {/* Subtle Background Glow */}
+
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-72 bg-gradient-to-b from-blue-50/60 to-transparent pointer-events-none -z-10" />
 
       <div className="mx-auto max-w-4xl">
-        {/* Main Card */}
+
         <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-xl shadow-slate-200/50">
-          
-          {/* Header Banner */}
+
           <div className="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 px-6 py-12 sm:px-10 text-white">
             <div className="absolute top-0 right-0 h-48 w-48 bg-white/10 blur-2xl rounded-full pointer-events-none" />
 
             <div className="relative flex flex-col items-center text-center">
-              {/* Profile Avatar */}
+
               <div className="relative group">
                 <div className="relative h-28 w-28 sm:h-32 sm:w-32 overflow-hidden rounded-full border-4 border-white bg-slate-100 shadow-2xl transition-all duration-300 group-hover:scale-105">
                   <Image
@@ -79,7 +78,7 @@ export default async function ProfilePage() {
                 </span>
               </div>
 
-              {/* Name & Email */}
+
               <h1 className="mt-5 text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-2 text-white">
                 {user?.name || "User Profile"}
               </h1>
@@ -87,8 +86,6 @@ export default async function ProfilePage() {
               <p className="mt-1 text-sm text-blue-100 font-medium">
                 {user?.email}
               </p>
-
-              {/* Role Badge */}
               <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-1 text-xs font-bold text-white border border-white/20 backdrop-blur-md">
                 <ShieldCheck className="h-3.5 w-3.5" />
                 <span className="uppercase tracking-wider">{user?.role || "USER"}</span>
@@ -96,7 +93,6 @@ export default async function ProfilePage() {
             </div>
           </div>
 
-          {/* Details Grid */}
           <div className="p-6 sm:p-10">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-bold text-slate-800 tracking-wide flex items-center gap-2">
@@ -106,7 +102,7 @@ export default async function ProfilePage() {
             </div>
 
             <div className="grid gap-4 sm:gap-5 md:grid-cols-2">
-              {/* Full Name */}
+
               <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/60 p-4 sm:p-5 transition-all hover:border-blue-200 hover:bg-blue-50/30">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
                   <User className="h-5 w-5" />
@@ -117,7 +113,6 @@ export default async function ProfilePage() {
                 </div>
               </div>
 
-              {/* Email */}
               <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/60 p-4 sm:p-5 transition-all hover:border-indigo-200 hover:bg-indigo-50/30">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
                   <Mail className="h-5 w-5" />
@@ -128,7 +123,7 @@ export default async function ProfilePage() {
                 </div>
               </div>
 
-              {/* Role */}
+
               <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/60 p-4 sm:p-5 transition-all hover:border-purple-200 hover:bg-purple-50/30">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-purple-600">
                   <ShieldCheck className="h-5 w-5" />
@@ -139,7 +134,7 @@ export default async function ProfilePage() {
                 </div>
               </div>
 
-              {/* Phone */}
+
               <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/60 p-4 sm:p-5 transition-all hover:border-emerald-200 hover:bg-emerald-50/30">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
                   <Phone className="h-5 w-5" />
@@ -150,7 +145,6 @@ export default async function ProfilePage() {
                 </div>
               </div>
 
-              {/* Address */}
               <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/60 p-4 sm:p-5 transition-all hover:border-amber-200 hover:bg-amber-50/30">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
                   <MapPin className="h-5 w-5" />
@@ -161,7 +155,7 @@ export default async function ProfilePage() {
                 </div>
               </div>
 
-              {/* Member Since */}
+
               <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/60 p-4 sm:p-5 transition-all hover:border-rose-200 hover:bg-rose-50/30">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-rose-100 text-rose-600">
                   <CalendarDays className="h-5 w-5" />
@@ -180,7 +174,7 @@ export default async function ProfilePage() {
                 </div>
               </div>
 
-              {/* Account Status */}
+   
               <div className="flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50/60 p-4 sm:p-5 md:col-span-2">
                 <div className="flex items-center gap-4">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-teal-100 text-teal-600">
@@ -198,7 +192,7 @@ export default async function ProfilePage() {
               </div>
             </div>
 
-            {/* Action Button */}
+
             <div className="mt-8 border-t border-slate-100 pt-6">
               <Link href="/dashboard/profile/edit" className="block w-full">
                 <Button className="w-full h-12 rounded-xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-500/20 hover:bg-blue-700 hover:shadow-blue-500/30 transition-all flex items-center justify-center gap-2">
