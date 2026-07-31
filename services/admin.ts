@@ -1,5 +1,26 @@
 const BASE_URL = typeof window !== "undefined" ? "" : "https://rentnest-nine.vercel.app";
-
+export interface RentalRequestItem {
+  id: string;
+  tenantId: string;
+  propertyId: string;
+  moveInDate: string;
+  duration: number;
+  message?: string;
+  totalAmount?: number;
+  status: string;
+  createdAt: string;
+  tenant?: {
+    name?: string;
+    email?: string;
+  };
+  property?: {
+    title?: string;
+    landlord?: {
+      name?: string;
+      email?: string;
+    };
+  };
+}
 
 const getCookie = (name: string): string | null => {
   if (typeof document === "undefined") return null;
@@ -90,5 +111,21 @@ export const updateUserByAdmin = async (
     }
   } catch (error) {
     return { success: false, message: "Network error occurred." };
+  }
+};
+
+export const getAllRentals = async (): Promise<RentalRequestItem[]> => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/rentals`, { // ✅ /api/ যোগ করা হয়েছে
+      headers: getAuthHeaders(),
+      cache: "no-store",
+    });
+
+    if (!res.ok) return [];
+    const result = await res.json();
+    return Array.isArray(result?.data) ? result.data : [];
+  } catch (error) {
+    console.error("getAllRentals error:", error);
+    return [];
   }
 };
