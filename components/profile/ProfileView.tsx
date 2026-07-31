@@ -14,6 +14,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://rentnest-nine.vercel.app";
+
 async function getMe() {
   const cookieStore = await cookies();
   const token = cookieStore.get("accessToken")?.value;
@@ -23,16 +25,13 @@ async function getMe() {
   }
 
   try {
-    const res = await fetch(
-      "https://rentnest-nine.vercel.app/api/auth/me",
-      {
-        headers: {
-          Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        cache: "no-store",
-      }
-    );
+    const res = await fetch(`${BASE_URL}/api/auth/me`, {
+      headers: {
+        Authorization: token.startsWith("Bearer ") ? token : `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
 
     if (!res.ok) {
       redirect("/auth/login");
@@ -48,7 +47,6 @@ async function getMe() {
 export default async function ProfileView() {
   const user = await getMe();
 
-  // Role অনুযায়ী সঠিক Edit URL
   const userRole = (user?.role || "tenant").toLowerCase();
   const editProfileHref = `/dashboard/${userRole}/profile/edit`;
 
@@ -109,7 +107,6 @@ export default async function ProfileView() {
             </div>
 
             <div className="mt-8 border-t border-slate-100 pt-6">
-              {/* 💡 Role অনুযায়ী ডায়নামিক Edit লিংক */}
               <Link href={editProfileHref} className="block w-full">
                 <Button className="w-full h-12 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700">
                   <Edit3 className="h-4 w-4 mr-2" /> Edit Profile
