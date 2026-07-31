@@ -7,16 +7,15 @@ const getCookie = (name: string): string | null => {
   return match ? decodeURIComponent(match[1]) : null;
 };
 
-// Authorization Header Generator
+
 const getAuthHeaders = () => {
-  const token = getCookie("accessToken") || getCookie("token"); // 'accessToken' না পেলে 'token' চেক করবে
+  const token = getCookie("accessToken") || getCookie("token"); 
   
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
 
   if (token) {
-    // Bearer ডুপ্লিকেট হওয়া আটকানো
     const cleanToken = token.replace(/^Bearer\s+/i, "");
     headers["Authorization"] = `Bearer ${cleanToken}`;
   }
@@ -43,6 +42,8 @@ export interface CreatePropertyPayload {
   images: string[];
   categoryId: string;
 }
+
+export type UpdatePropertyPayload = Partial<CreatePropertyPayload>;
 
 export const getCategories = async (): Promise<Category[]> => {
   try {
@@ -81,7 +82,6 @@ export const createProperty = async (payload: CreatePropertyPayload) => {
   try {
     const headers = getAuthHeaders();
     
-    // টোকেন না থাকলে ব্রাউজার কনসোলে আগেই সতর্ক করবে
     if (!headers["Authorization"]) {
       console.warn("⚠️ Warning: No Authorization token found in document.cookie!");
     }
@@ -92,7 +92,6 @@ export const createProperty = async (payload: CreatePropertyPayload) => {
       body: JSON.stringify(payload),
     });
 
-    // সার্ভার থেকে HTML/Unexpected Text রেসপন্স আসলে হ্যান্ডেল করার নিরাপদ উপায়
     const responseText = await res.text();
 
     try {
@@ -111,8 +110,64 @@ export const createProperty = async (payload: CreatePropertyPayload) => {
   }
 };
 
+
+export const deleteProperty = async (id: string) => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/landlord/properties/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+
+    const responseText = await res.text();
+
+    try {
+      const data = JSON.parse(responseText);
+      return data;
+    } catch {
+      console.error("Delete property non-JSON response:", responseText);
+      return {
+        success: false,
+        message: `Server Error (${res.status}): Could not delete property.`,
+      };
+    }
+  } catch (error) {
+    console.error("deleteProperty network error:", error);
+    return { success: false, message: "Network error while deleting property." };
+  }
+};
+
+
+export const updateProperty = async (id: string, payload: UpdatePropertyPayload) => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/landlord/properties/${id}`, {
+      method: "PUT", 
+      headers: getAuthHeaders(),
+      body: JSON.stringify(payload),
+    });
+
+    const responseText = await res.text();
+
+    try {
+      const data = JSON.parse(responseText);
+      return data;
+    } catch {
+      console.error("Update property non-JSON response:", responseText);
+      return {
+        success: false,
+        message: `Server Error (${res.status}): Could not update property.`,
+      };
+    }
+  } catch (error) {
+    console.error("updateProperty network error:", error);
+    return { success: false, message: "Network error while updating property." };
+  }
+};
+
 export const landlordService = {
   getCategories,
   getMyProperties,
+  getProperties: getMyProperties,
   createProperty,
+  deleteProperty,
+  updateProperty,
 };
