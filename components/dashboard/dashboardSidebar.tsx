@@ -52,6 +52,7 @@ export default function DashboardSidebar({ userRole }: { userRole?: UserRole }) 
     ],
     ADMIN: [
       { name: "Dashboard", href: "/dashboard/admin", icon: LayoutDashboard },
+      { name: "Users-Management", href: "/dashboard/admin/users", icon: Users },
       { name: "Properties", href: "/dashboard/admin/properties", icon: Building2 },
       { name: "Profile", href: "/dashboard/admin/profile", icon: User },
     ],

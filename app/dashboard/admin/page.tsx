@@ -1,160 +1,145 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAllUsers, updateUserByAdmin, UserItem } from "@/services/admin";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, ShieldCheck, UserCheck, Users, Ban } from "lucide-react";
+  getAllUsers,
+  getAllProperties,
+  UserItem,
+  PropertyItem,
+} from "@/services/admin";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Users, Building2, Loader2, Activity } from "lucide-react";
 
-export default function AdminUsersPage() {
+export default function DynamicAdminDashboard() {
   const [users, setUsers] = useState<UserItem[]>([]);
+  const [properties, setProperties] = useState<PropertyItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
+  // Fetch live data (Users & Properties only)
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchDashboardData = async () => {
       setLoading(true);
-      const data = await getAllUsers();
-      setUsers(data);
-      setLoading(false);
+      try {
+        const [usersData, propertiesData] = await Promise.all([
+          getAllUsers(),
+          getAllProperties(),
+        ]);
+
+        setUsers(usersData);
+        setProperties(propertiesData);
+      } catch (error) {
+        console.error("Error loading admin dashboard stats:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchUsers();
+    fetchDashboardData();
   }, []);
 
-
-const handleStatusToggle = async (user: UserItem) => {
-  setActionLoadingId(user.id);
-
-  const isCurrentlyBlocked = user.isBlocked ?? (user.status === "BLOCKED");
-  const nextBlockedState = !isCurrentlyBlocked;
-
-
-  const payload = {
-    isBlocked: nextBlockedState,
-
-  };
-
-  try {
-    const res = await updateUserByAdmin(user.id, payload);
-
-    if (res?.success !== false) {
-      setUsers((prev) =>
-        prev.map((u) =>
-          u.id === user.id
-            ? { ...u, isBlocked: nextBlockedState, status: nextBlockedState ? "BLOCKED" : "ACTIVE" }
-            : u
-        )
-      );
-    } else {
-      alert(res?.message || "Failed to update user status.");
-    }
-  } catch (error) {
-    console.error("Error updating status:", error);
-    alert("Something went wrong while updating status.");
-  } finally {
-    setActionLoadingId(null);
+  if (loading) {
+    return (
+      <div className="flex flex-col justify-center items-center py-24 gap-3">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <p className="text-sm text-muted-foreground font-medium">
+          Loading platform metrics...
+        </p>
+      </div>
+    );
   }
-};
+
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="p-6 max-w-7xl mx-auto space-y-8">
+      {/* Top Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Admin Management</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage user roles and account statuses across RentNest.
+          <h1 className="text-3xl font-bold tracking-tight">Admin Overview</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Real-time dynamic platform stats for RentNest moderation.
           </p>
         </div>
+        <Badge
+          variant="outline"
+          className="w-fit px-3 py-1 bg-emerald-50 text-emerald-700 border-emerald-200 flex gap-1.5 items-center"
+        >
+          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+          Live Platform Data
+        </Badge>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Users className="h-5 w-5" />
-            Registered Users ({users.length})
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {loading ? (
-            <div className="flex justify-center items-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      {/* 2 Stat Overview Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Total Users */}
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Total Users
+            </CardTitle>
+            <div className="h-9 w-9 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">
+              <Users className="h-5 w-5" />
             </div>
-          ) : users.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              No users found.
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>User</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Action</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {users.map((user) => {
-                  const isBlocked =
-                    user.status === "BLOCKED" || user.isBlocked === true;
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{users.length}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Registered Tenants & Landlords
+            </p>
+          </CardContent>
+        </Card>
 
-                  return (
-                    <TableRow key={user.id}>
-                      <TableCell className="font-medium">
-                        {user.name || "N/A"}
-                      </TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="capitalize">
-                          {user.role}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {isBlocked ? (
-                          <Badge variant="destructive" className="flex w-fit items-center gap-1">
-                            <Ban className="h-3 w-3" /> Blocked
-                          </Badge>
-                        ) : (
-                          <Badge variant="default" className="bg-emerald-600 hover:bg-emerald-700 flex w-fit items-center gap-1">
-                            <UserCheck className="h-3 w-3" /> Active
-                          </Badge>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button
-                          size="sm"
-                          variant={isBlocked ? "default" : "destructive"}
-                          disabled={actionLoadingId === user.id}
-                          onClick={() => handleStatusToggle(user)}
-                          className="rounded-lg text-xs"
-                        >
-                          {actionLoadingId === user.id ? (
-                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                          ) : isBlocked ? (
-                            "Unblock"
-                          ) : (
-                            "Block"
-                          )}
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+        {/* Total Properties */}
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Total Properties
+            </CardTitle>
+            <div className="h-9 w-9 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center">
+              <Building2 className="h-5 w-5" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{properties.length}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Active & Listed Rentals
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Dynamic Content Grid */}
+      <div className="grid grid-cols-1 gap-6">
+        {/* Dynamic User Summary / System Logs */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Activity className="h-5 w-5 text-primary" />
+              Latest Registered Users
+            </CardTitle>
+            <CardDescription>Dynamic user registration feeds.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="relative border-l border-slate-200 ml-3 space-y-6 pb-2">
+              {users.slice(0, 5).map((u) => (
+                <div key={u.id} className="ml-4 relative">
+                  <span className="absolute -left-[23px] top-1 h-3 w-3 rounded-full bg-blue-500 ring-4 ring-white" />
+                  <p className="text-xs font-semibold">{u.name || "User"}</p>
+                  <p className="text-xs text-muted-foreground">{u.email}</p>
+                  <Badge variant="outline" className="text-[10px] mt-1 uppercase">
+                    {u.role}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

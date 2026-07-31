@@ -28,32 +28,50 @@ export interface UserItem {
   role: "ADMIN" | "LANDLORD" | "TENANT";
   status?: "ACTIVE" | "BLOCKED";
   isBlocked?: boolean;
-  createdAt?: string;
 }
 
+export interface PropertyItem {
+  id: string;
+  title: string;
+  location: string;
+  price: number;
+  isAvailable?: boolean;
+}
+
+// 1. Fetch All Users
 export const getAllUsers = async (): Promise<UserItem[]> => {
   try {
     const res = await fetch(`${BASE_URL}/api/admin/users`, {
-      method: "GET",
       headers: getAuthHeaders(),
       cache: "no-store",
-      credentials: "include",
     });
-
     if (!res.ok) return [];
-
     const result = await res.json();
-    return Array.isArray(result?.data)
-      ? result.data
-      : Array.isArray(result)
-      ? result
-      : [];
+    return Array.isArray(result?.data) ? result.data : Array.isArray(result) ? result : [];
   } catch (error) {
     console.error("getAllUsers error:", error);
     return [];
   }
 };
 
+// 2. Fetch All Properties
+export const getAllProperties = async (): Promise<PropertyItem[]> => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/properties`, {
+      headers: getAuthHeaders(),
+      cache: "no-store",
+    });
+    if (!res.ok) return [];
+    const result = await res.json();
+    return Array.isArray(result?.data) ? result.data : Array.isArray(result) ? result : [];
+  } catch (error) {
+    console.error("getAllProperties error:", error);
+    return [];
+  }
+};
+
+
+// 4. Update User Status
 export const updateUserByAdmin = async (
   userId: string,
   payload: { role?: string; status?: string; isBlocked?: boolean }
@@ -63,30 +81,14 @@ export const updateUserByAdmin = async (
       method: "PATCH",
       headers: getAuthHeaders(),
       body: JSON.stringify(payload),
-      credentials: "include",
     });
-
     const responseText = await res.text();
-
     try {
-      const parsedData = JSON.parse(responseText);
-
-      if (!res.ok) {
-        return {
-          success: false,
-          message: parsedData?.message || `Server Error (${res.status})`,
-        };
-      }
-
-      return parsedData;
+      return JSON.parse(responseText);
     } catch {
-      return {
-        success: false,
-        message: `Server Error (${res.status}): ${responseText.slice(0, 100)}`,
-      };
+      return { success: res.ok, message: responseText };
     }
   } catch (error) {
-    console.error("updateUserByAdmin error:", error);
     return { success: false, message: "Network error occurred." };
   }
 };
