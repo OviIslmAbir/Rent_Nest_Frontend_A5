@@ -1,6 +1,5 @@
 const BASE_URL = typeof window !== "undefined" ? "" : "https://rentnest-nine.vercel.app";
 
-// Safe Cookie Parser Helper
 const getCookie = (name: string): string | null => {
   if (typeof document === "undefined") return null;
   const match = document.cookie.match(
@@ -23,8 +22,6 @@ const getAuthHeaders = () => {
 
   return headers;
 };
-
-// --- Interfaces ---
 
 export interface Category {
   id: string;
@@ -65,7 +62,7 @@ export interface RentalRequest {
   };
 }
 
-// --- Category API ---
+
 
 export const getCategories = async (): Promise<Category[]> => {
   try {
@@ -84,7 +81,7 @@ export const getCategories = async (): Promise<Category[]> => {
   }
 };
 
-// --- Property Management APIs ---
+
 
 export const getMyProperties = async () => {
   try {
@@ -201,7 +198,6 @@ export const updateProperty = async (id: string, payload: UpdatePropertyPayload)
   }
 };
 
-// --- Rental Requests Management APIs ---
 
 export const getLandlordRequests = async () => {
   try {
@@ -250,7 +246,7 @@ export const updateRentalRequestStatus = async (
   }
 };
 
-// --- Export Service Object ---
+
 
 export const landlordService = {
   getCategories,

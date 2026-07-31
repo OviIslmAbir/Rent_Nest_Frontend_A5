@@ -46,15 +46,13 @@ export default function DashboardSidebar({ userRole }: { userRole?: UserRole }) 
     ],
     LANDLORD: [
       { name: "Dashboard", href: "/dashboard/landlord", icon: LayoutDashboard },
-      { name: "Add Property", href: "/dashboard/landlord/properties/new", icon: PlusCircle }, // <-- Add Property Option Added
+      { name: "Add Property", href: "/dashboard/landlord/properties/new", icon: PlusCircle }, 
       { name: "Rental Requests", href: "/dashboard/landlord/requests", icon: Home },
       { name: "Profile", href: "/dashboard/landlord/profile", icon: User },
     ],
     ADMIN: [
       { name: "Dashboard", href: "/dashboard/admin", icon: LayoutDashboard },
-      { name: "Users", href: "/dashboard/admin/users", icon: Users },
       { name: "Properties", href: "/dashboard/admin/properties", icon: Building2 },
-      { name: "Rentals", href: "/dashboard/admin/rentals", icon: Home },
       { name: "Profile", href: "/dashboard/admin/profile", icon: User },
     ],
   };
