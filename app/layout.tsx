@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import { cookies } from "next/headers";
 import { jwtDecode } from "jwt-decode";
+import { Toaster } from "@/components/ui/toast";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -71,6 +72,7 @@ export default async function RootLayout({
     >
       <body className="min-h-screen" suppressHydrationWarning>
         <LayoutWrapper isLoggedIn={isLoggedIn} userRole={userRole}>
+          <Toaster />
           {children}
         </LayoutWrapper>
       </body>

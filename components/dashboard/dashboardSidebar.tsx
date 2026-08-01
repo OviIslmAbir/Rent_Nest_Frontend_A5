@@ -62,7 +62,6 @@ export default function DashboardSidebar({ userRole }: { userRole?: UserRole }) 
 
   const currentMenu = menu[activeRole] || menu.TENANT;
 
-  // চেক করবে মেনুর কোনোটির সাথে Exact Match আছে কিনা
   const hasExactMatch = currentMenu.some((item) => pathname === item.href);
 
   return (
@@ -86,14 +85,12 @@ export default function DashboardSidebar({ userRole }: { userRole?: UserRole }) 
         </div>
 
         <nav className="p-4 space-y-1.5">
-          {currentMenu.map((item) => {
+          {currentMenu.map((item, index) => {
             const Icon = item.icon;
 
-            // যদি কোনো মেনু আইটেমের সাথে Exact Match মিলে যায়, তবে শুধুমাত্র সেটাই active হবে।
-            // কোনো নির্দিষ্ট ম্যাচ না থাকলে (যেমন Sub-route বা Edit page-এ থাকলে) startsWith চেক করবে।
             const isActive = hasExactMatch
               ? pathname === item.href
-              : pathname.startsWith(`${item.href}/`);
+              : index !== 0 && pathname.startsWith(`${item.href}/`);
 
             return (
               <Link

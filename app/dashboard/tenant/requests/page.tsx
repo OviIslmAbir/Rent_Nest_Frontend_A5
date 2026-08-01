@@ -15,6 +15,10 @@ type Rental = {
   property?: { title?: string; city?: string } | null;
   moveInDate?: string | null;
   duration?: number | null;
+  payment?: {
+    id: string;
+    status: "PENDING" | "COMPLETED" | "FAILED";
+  } | null;
 };
 
 export default async function RentalRequestsPage() {
@@ -24,21 +28,24 @@ export default async function RentalRequestsPage() {
   const rentals: Rental[] = Array.isArray(rawData) ? rawData : [];
 
   const pending = rentals.filter((r: Rental) => r.status === "PENDING").length;
-  const approved = rentals.filter((r: Rental) => r.status === "APPROVED").length;
+  const approved = rentals.filter(
+    (r: Rental) => r.status === "APPROVED" && r.payment?.status !== "COMPLETED"
+  ).length;
   const rejected = rentals.filter((r: Rental) => r.status === "REJECTED").length;
-  const active = rentals.filter((r: Rental) => r.status === "ACTIVE").length;
+  const active = rentals.filter(
+    (r: Rental) => r.status === "ACTIVE" || r.payment?.status === "COMPLETED"
+  ).length;
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white">
+
+      <div className="rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white shadow-md">
         <h1 className="text-3xl font-bold">Rental Requests</h1>
         <p className="mt-2 text-blue-100">
           Track all your rental requests and their current status.
         </p>
       </div>
 
-      {/* Stats */}
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
         <StatCard
           title="Pending"
@@ -48,91 +55,100 @@ export default async function RentalRequestsPage() {
         />
 
         <StatCard
-          title="Approved"
+          title="Approved (Unpaid)"
           value={approved}
-          color="text-green-600"
+          color="text-emerald-600"
           icon={<CheckCircle2 />}
         />
 
         <StatCard
           title="Rejected"
           value={rejected}
-          color="text-red-600"
+          color="text-rose-600"
           icon={<XCircle />}
         />
 
         <StatCard
-          title="Active"
+          title="Active / Paid"
           value={active}
           color="text-blue-600"
           icon={<Home />}
         />
       </div>
 
-      {/* Table */}
+  
       <div className="overflow-hidden rounded-2xl border bg-white shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-slate-50">
+            <thead className="bg-slate-50 border-b">
               <tr>
-                <th className="px-6 py-4 text-left">Property</th>
-                <th className="px-6 py-4 text-left">Move In</th>
-                <th className="px-6 py-4 text-left">Duration</th>
-                <th className="px-6 py-4 text-left">Status</th>
-                <th className="px-6 py-4 text-left">Action</th>
+                <th className="px-6 py-4 text-left font-semibold text-slate-700">Property</th>
+                <th className="px-6 py-4 text-left font-semibold text-slate-700">Move In</th>
+                <th className="px-6 py-4 text-left font-semibold text-slate-700">Duration</th>
+                <th className="px-6 py-4 text-left font-semibold text-slate-700">Status</th>
+                <th className="px-6 py-4 text-left font-semibold text-slate-700">Action</th>
               </tr>
             </thead>
 
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {rentals.length > 0 ? (
-                rentals.map((item: Rental) => (
-                  <tr key={item.id} className="border-t">
-                    <td className="px-6 py-5">
-                      <div>
-                        <h3 className="font-semibold">
-                          {item.property?.title || "N/A"}
-                        </h3>
+                rentals.map((item: Rental) => {
 
-                        <p className="text-sm text-slate-500">
-                          {item.property?.city || "N/A"}
-                        </p>
-                      </div>
-                    </td>
+                  const isPaid =
+                    item.payment?.status === "COMPLETED" ||
+                    item.status === "ACTIVE";
 
-                    <td className="px-6 py-5">
-                      {item.moveInDate
-                        ? new Date(item.moveInDate).toLocaleDateString()
-                        : "--"}
-                    </td>
+                  return (
+                    <tr key={item.id} className="hover:bg-slate-50/50 transition">
+                      <td className="px-6 py-5">
+                        <div>
+                          <h3 className="font-semibold text-slate-800">
+                            {item.property?.title || "N/A"}
+                          </h3>
 
-                    <td className="px-6 py-5">
-                      {item.duration ? `${item.duration} Months` : "--"}
-                    </td>
+                          <p className="text-sm text-slate-500">
+                            {item.property?.city || "N/A"}
+                          </p>
+                        </div>
+                      </td>
 
-                    <td className="px-6 py-5">
-                      <StatusBadge status={item.status} />
-                    </td>
+                      <td className="px-6 py-5 text-slate-600">
+                        {item.moveInDate
+                          ? new Date(item.moveInDate).toLocaleDateString()
+                          : "--"}
+                      </td>
 
-                    <td className="px-6 py-5">
-                      {item.status === "APPROVED" ? (
-                        <Link
-                          href={`/dashboard/tenant/payments/${item.id}`}
-                          className="rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700 transition"
-                        >
-                          Pay Now
-                        </Link>
-                      ) : (
-                        <Link
-                          // 💡 সঠিক রাউট লিংক ব্যবহার করা হয়েছে
-                          href={`/dashboard/tenant/requests/${item.id}`}
-                          className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition"
-                        >
-                          View
-                        </Link>
-                      )}
-                    </td>
-                  </tr>
-                ))
+                      <td className="px-6 py-5 text-slate-600">
+                        {item.duration ? `${item.duration} Months` : "--"}
+                      </td>
+
+                      <td className="px-6 py-5">
+                        <StatusBadge
+                          status={isPaid ? "ACTIVE" : item.status}
+                        />
+                      </td>
+
+                      <td className="px-6 py-5">
+
+                        {item.status === "APPROVED" && !isPaid ? (
+                          <Link
+                            href={`/dashboard/tenant/requests/${item.id}`}
+                            className="rounded-lg bg-emerald-600 px-4 py-2 text-white font-medium hover:bg-emerald-700 transition shadow-sm inline-block"
+                          >
+                            Pay Now
+                          </Link>
+                        ) : (
+                          <Link
+                            href={`/dashboard/tenant/requests/${item.id}`}
+                            className="rounded-lg bg-slate-800 px-4 py-2 text-white font-medium hover:bg-slate-900 transition shadow-sm inline-block"
+                          >
+                            View Request
+                          </Link>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
                   <td
@@ -144,7 +160,7 @@ export default async function RentalRequestsPage() {
                       className="mx-auto mb-4 text-slate-300"
                     />
 
-                    <h3 className="text-xl font-semibold">
+                    <h3 className="text-xl font-semibold text-slate-700">
                       No Rental Requests
                     </h3>
 
@@ -154,7 +170,7 @@ export default async function RentalRequestsPage() {
 
                     <Link
                       href="/properties"
-                      className="mt-5 inline-block rounded-xl bg-blue-600 px-6 py-3 text-white hover:bg-blue-700 transition"
+                      className="mt-5 inline-block rounded-xl bg-blue-600 px-6 py-3 text-white font-medium hover:bg-blue-700 transition shadow-sm"
                     >
                       Browse Properties
                     </Link>
@@ -184,28 +200,28 @@ function StatCard({
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
       <div className={`${color} mb-4`}>{icon}</div>
 
-      <h2 className="text-3xl font-bold">{value}</h2>
+      <h2 className="text-3xl font-bold text-slate-800">{value}</h2>
 
-      <p className="mt-1 text-slate-500">{title}</p>
+      <p className="mt-1 text-slate-500 text-sm font-medium">{title}</p>
     </div>
   );
 }
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    PENDING: "bg-yellow-100 text-yellow-700",
-    APPROVED: "bg-green-100 text-green-700",
-    REJECTED: "bg-red-100 text-red-700",
-    ACTIVE: "bg-blue-100 text-blue-700",
+    PENDING: "bg-amber-100 text-amber-700 border border-amber-200",
+    APPROVED: "bg-emerald-100 text-emerald-700 border border-emerald-200",
+    REJECTED: "bg-rose-100 text-rose-700 border border-rose-200",
+    ACTIVE: "bg-blue-100 text-blue-700 border border-blue-200",
   };
 
   return (
     <span
-      className={`rounded-full px-3 py-1 text-sm font-medium ${
+      className={`rounded-full px-3 py-1 text-xs font-semibold ${
         styles[status] || "bg-slate-100 text-slate-700"
       }`}
     >
-      {status}
+      {status === "ACTIVE" ? "ACTIVE / PAID" : status}
     </span>
   );
 }
