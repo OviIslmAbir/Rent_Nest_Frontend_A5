@@ -95,7 +95,7 @@ export default async function TenantPage() {
         <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm flex items-center justify-between">
           <div>
             <h2 className="text-3xl font-black text-slate-800">
-              ৳ {totalMonthlyRent.toLocaleString()}
+              $ {totalMonthlyRent.toLocaleString()}
             </h2>
             <p className="text-slate-500 font-medium text-sm mt-1">
               Monthly Rent

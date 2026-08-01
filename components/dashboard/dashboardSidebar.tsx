@@ -49,6 +49,7 @@ export default function DashboardSidebar({ userRole }: { userRole?: UserRole }) 
       { name: "Properties", href: "/dashboard/landlord/properties", icon: Building2 },
       { name: "Add Property", href: "/dashboard/landlord/properties/new", icon: PlusCircle },
       { name: "Rental Requests", href: "/dashboard/landlord/requests", icon: Home },
+      { name: "Reviews", href: "/dashboard/landlord/reviews", icon: Star }, // 👈 Reviews যুক্ত করা হলো
       { name: "Profile", href: "/dashboard/landlord/profile", icon: User },
     ],
     ADMIN: [

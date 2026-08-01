@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import { cookies } from "next/headers";
 import { jwtDecode } from "jwt-decode";
-import { Toaster } from "@/components/ui/toast";
-
+// import { Toaster } from "@/components/ui/toast";
+import { Toaster } from "react-hot-toast";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -72,7 +72,8 @@ export default async function RootLayout({
     >
       <body className="min-h-screen" suppressHydrationWarning>
         <LayoutWrapper isLoggedIn={isLoggedIn} userRole={userRole}>
-          <Toaster />
+          <Toaster position="top-center" reverseOrder={false} />
+          {/* <Toaster /> */}
           {children}
         </LayoutWrapper>
       </body>

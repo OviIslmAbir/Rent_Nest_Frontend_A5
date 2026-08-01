@@ -128,3 +128,48 @@ export const createReview = async (payload: ReviewPayload) => {
     };
   }
 };
+export const getLandlordReviews = async () => {
+  try {
+    const token = await getAccessToken();
+
+    if (!token) {
+      return {
+        success: false,
+        message: "Unauthorized",
+        data: [],
+      };
+    }
+
+    const res = await fetch(`${BASE_URL}/api/landlord/reviews`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      return {
+        success: false,
+        message: result?.message || "Failed to fetch reviews",
+        data: [],
+      };
+    }
+
+    return {
+      success: true,
+      data: result.data ?? [],
+    };
+  } catch (error) {
+    console.error(error);
+
+    return {
+      success: false,
+      message: "Internal Server Error",
+      data: [],
+    };
+  }
+};

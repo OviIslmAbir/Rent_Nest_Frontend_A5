@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Loader2, Save } from "lucide-react";
+import toast from "react-hot-toast"; // 1. Toast Import
 import { Button } from "@/components/ui/button";
 import { landlordService, Category } from "@/services/landlord";
 
@@ -30,14 +31,12 @@ export default function EditPropertyPage() {
     categoryId: "",
   });
 
-  // ক্যাটাগরি এবং বিদ্যমান প্রোপার্টির ডাটা লোড করা
   useEffect(() => {
     const loadInitialData = async () => {
       try {
         const catRes = await landlordService.getCategories();
         setCategories(catRes);
 
-        // প্রোপার্টি লিস্ট থেকে বিদ্যমান ডাটা খুঁজে বের করা
         const propRes = await landlordService.getMyProperties();
         const propertyList = Array.isArray(propRes) ? propRes : propRes?.data || [];
         const currentProp = propertyList.find((p: any) => p.id === propertyId || p._id === propertyId);
@@ -59,6 +58,7 @@ export default function EditPropertyPage() {
         }
       } catch (error) {
         console.error("Failed to fetch property details:", error);
+        toast.error("Failed to load property details.");
       } finally {
         setLoading(false);
       }
@@ -81,6 +81,9 @@ export default function EditPropertyPage() {
     e.preventDefault();
     setSubmitting(true);
 
+
+    const toastId = toast.loading("Updating property...");
+
     const payload = {
       ...formData,
       amenities: formData.amenities.split(",").map((item) => item.trim()).filter(Boolean),
@@ -90,14 +93,14 @@ export default function EditPropertyPage() {
     try {
       const res = await landlordService.updateProperty(propertyId, payload);
       if (res?.success !== false) {
-        alert("Property updated successfully!");
+        toast.success("Property updated successfully!", { id: toastId });
         router.push("/dashboard/landlord");
       } else {
-        alert(res?.message || "Failed to update property.");
+        toast.error(res?.message || "Failed to update property.", { id: toastId });
       }
     } catch (error) {
       console.error("Update error:", error);
-      alert("An error occurred while updating the property.");
+      toast.error("An error occurred while updating the property.", { id: toastId });
     } finally {
       setSubmitting(false);
     }
@@ -114,7 +117,7 @@ export default function EditPropertyPage() {
 
   return (
     <main className="p-6 md:p-10 max-w-4xl mx-auto space-y-6">
-      {/* Header & Back Link */}
+
       <div className="flex items-center gap-4">
         <Link href="/dashboard/landlord">
           <Button variant="outline" size="icon" className="rounded-xl border-slate-200">
@@ -127,7 +130,6 @@ export default function EditPropertyPage() {
         </div>
       </div>
 
-      {/* Form Card */}
       <form onSubmit={handleSubmit} className="bg-white p-6 md:p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6">
         <div className="space-y-4">
           <div>
@@ -274,7 +276,7 @@ export default function EditPropertyPage() {
           </div>
         </div>
 
-        {/* Submit Button */}
+
         <div className="pt-4 flex justify-end gap-3">
           <Link href="/dashboard/landlord">
             <Button type="button" variant="outline" className="rounded-xl h-11 px-5 border-slate-200 font-bold">

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Save, Loader2, Plus, X } from "lucide-react";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { landlordService, Category } from "@/services/landlord";
 
@@ -44,7 +44,9 @@ export default function CreatePropertyPage() {
       } catch (err) {
         console.error("Error loading categories:", err);
         if (isMounted) {
-          toast.error("Could not load property categories");
+          toast.error("Could not load property categories", {
+            position: "top-center",
+          });
         }
       } finally {
         if (isMounted) {
@@ -75,7 +77,7 @@ export default function CreatePropertyPage() {
     e.preventDefault();
 
     if (!formData.categoryId) {
-      toast.error("Please select a category");
+      toast.error("Please select a category", { position: "top-center" });
       return;
     }
 
@@ -101,14 +103,20 @@ export default function CreatePropertyPage() {
       const res = await landlordService.createProperty(payload);
 
       if (res?.success !== false) {
-        toast.success("Property created successfully!");
+        toast.success("Property created successfully!", {
+          position: "top-center",
+        });
         router.push("/dashboard/landlord");
         router.refresh();
       } else {
-        toast.error(res?.message || "Failed to create property.");
+        toast.error(res?.message || "Failed to create property.", {
+          position: "top-center",
+        });
       }
     } catch (error) {
-      toast.error("Failed to create property. Please try again.");
+      toast.error("Failed to create property. Please try again.", {
+        position: "top-center",
+      });
       console.error(error);
     } finally {
       setLoading(false);
@@ -117,7 +125,10 @@ export default function CreatePropertyPage() {
 
   return (
     <main suppressHydrationWarning className="p-6 md:p-10 max-w-4xl mx-auto">
-      <div suppressHydrationWarning className="bg-white rounded-3xl border border-slate-100 p-6 sm:p-8 shadow-sm space-y-6">
+      <div
+        suppressHydrationWarning
+        className="bg-white rounded-3xl border border-slate-100 p-6 sm:p-8 shadow-sm space-y-6"
+      >
         <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
           <button
             type="button"
@@ -127,14 +138,20 @@ export default function CreatePropertyPage() {
             <ArrowLeft className="h-5 w-5 text-slate-600" />
           </button>
           <div>
-            <h1 className="text-xl font-black text-slate-800">Add New Property</h1>
+            <h1 className="text-xl font-black text-slate-800">
+              Add New Property
+            </h1>
             <p className="text-xs text-slate-500">
               Provide complete property details matching server API format
             </p>
           </div>
         </div>
 
-        <form suppressHydrationWarning onSubmit={handleSubmit} className="space-y-5">
+        <form
+          suppressHydrationWarning
+          onSubmit={handleSubmit}
+          className="space-y-5"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="text-xs font-bold text-slate-500 uppercase">
@@ -145,7 +162,9 @@ export default function CreatePropertyPage() {
                 required
                 placeholder="e.g. Independent House"
                 value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
                 className="w-full mt-1.5 p-3.5 border border-slate-200 rounded-2xl bg-slate-50/50 text-sm focus:outline-blue-600"
               />
             </div>
@@ -156,16 +175,21 @@ export default function CreatePropertyPage() {
               </label>
               {fetchingCategories ? (
                 <div className="mt-1.5 p-3.5 border border-slate-200 rounded-2xl bg-slate-50 text-xs text-slate-400 flex items-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" /> Loading categories...
+                  <Loader2 className="h-4 w-4 animate-spin" /> Loading
+                  categories...
                 </div>
               ) : (
                 <select
                   required
                   value={formData.categoryId}
-                  onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, categoryId: e.target.value })
+                  }
                   className="w-full mt-1.5 p-3.5 border border-slate-200 rounded-2xl bg-slate-50/50 text-sm focus:outline-blue-600 font-medium text-slate-700"
                 >
-                  <option value="" disabled>Select Category</option>
+                  <option value="" disabled>
+                    Select Category
+                  </option>
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.id}>
                       {cat.name}
@@ -186,7 +210,9 @@ export default function CreatePropertyPage() {
                 required
                 placeholder="e.g. Rajshahi"
                 value={formData.city}
-                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, city: e.target.value })
+                }
                 className="w-full mt-1.5 p-3.5 border border-slate-200 rounded-2xl bg-slate-50/50 text-sm focus:outline-blue-600"
               />
             </div>
@@ -200,7 +226,9 @@ export default function CreatePropertyPage() {
                 required
                 placeholder="e.g. Uposhohor"
                 value={formData.area}
-                onChange={(e) => setFormData({ ...formData, area: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, area: e.target.value })
+                }
                 className="w-full mt-1.5 p-3.5 border border-slate-200 rounded-2xl bg-slate-50/50 text-sm focus:outline-blue-600"
               />
             </div>
@@ -214,7 +242,9 @@ export default function CreatePropertyPage() {
                 required
                 placeholder="e.g. Sector 7"
                 value={formData.address}
-                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, address: e.target.value })
+                }
                 className="w-full mt-1.5 p-3.5 border border-slate-200 rounded-2xl bg-slate-50/50 text-sm focus:outline-blue-600"
               />
             </div>
@@ -230,7 +260,9 @@ export default function CreatePropertyPage() {
                 required
                 placeholder="35000"
                 value={formData.rentPrice}
-                onChange={(e) => setFormData({ ...formData, rentPrice: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, rentPrice: e.target.value })
+                }
                 className="w-full mt-1.5 p-3.5 border border-slate-200 rounded-2xl bg-slate-50/50 text-sm focus:outline-blue-600"
               />
             </div>
@@ -244,7 +276,9 @@ export default function CreatePropertyPage() {
                 required
                 placeholder="4"
                 value={formData.bedrooms}
-                onChange={(e) => setFormData({ ...formData, bedrooms: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, bedrooms: e.target.value })
+                }
                 className="w-full mt-1.5 p-3.5 border border-slate-200 rounded-2xl bg-slate-50/50 text-sm focus:outline-blue-600"
               />
             </div>
@@ -258,7 +292,9 @@ export default function CreatePropertyPage() {
                 required
                 placeholder="3"
                 value={formData.bathrooms}
-                onChange={(e) => setFormData({ ...formData, bathrooms: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, bathrooms: e.target.value })
+                }
                 className="w-full mt-1.5 p-3.5 border border-slate-200 rounded-2xl bg-slate-50/50 text-sm focus:outline-blue-600"
               />
             </div>
@@ -321,7 +357,9 @@ export default function CreatePropertyPage() {
               required
               placeholder="https://example.com/house1.jpg, https://example.com/house2.jpg"
               value={formData.images}
-              onChange={(e) => setFormData({ ...formData, images: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, images: e.target.value })
+              }
               className="w-full mt-1.5 p-3.5 border border-slate-200 rounded-2xl bg-slate-50/50 text-sm focus:outline-blue-600"
             />
           </div>
@@ -335,7 +373,9 @@ export default function CreatePropertyPage() {
               rows={4}
               placeholder="A beautiful independent house with a private garden."
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
               className="w-full mt-1.5 p-3.5 border border-slate-200 rounded-2xl bg-slate-50/50 text-sm focus:outline-blue-600"
             />
           </div>
