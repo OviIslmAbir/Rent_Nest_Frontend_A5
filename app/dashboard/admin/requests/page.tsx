@@ -59,7 +59,7 @@ export default function AdminRentalModerationPage() {
 
   return (
     <main className="p-6 md:p-10 max-w-7xl mx-auto space-y-8">
-      {/* Header */}
+
       <div>
         <h1 className="text-2xl font-black text-slate-800">Rental Requests Moderation</h1>
         <p className="text-sm text-slate-500 font-medium">
@@ -67,7 +67,6 @@ export default function AdminRentalModerationPage() {
         </p>
       </div>
 
-      {/* RENTAL REQUESTS TABLE */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-slate-100 flex items-center gap-2">
           <FileText className="w-5 h-5 text-blue-600" />
@@ -94,13 +93,12 @@ export default function AdminRentalModerationPage() {
               <tbody className="divide-y divide-slate-100">
                 {rentals.map((req) => (
                   <tr key={req.id} className="hover:bg-slate-50/50 transition-colors">
-                    {/* Tenant */}
+
                     <td className="px-6 py-4">
                       <div className="font-bold text-slate-800">{req.tenant?.name || "Tenant"}</div>
                       <div className="text-xs text-slate-400">{req.tenant?.email}</div>
                     </td>
 
-                    {/* Property & Landlord */}
                     <td className="px-6 py-4">
                       <p className="font-bold text-slate-800">{req.property?.title || "Property"}</p>
                       <p className="text-xs text-slate-400">
@@ -108,7 +106,6 @@ export default function AdminRentalModerationPage() {
                       </p>
                     </td>
 
-                    {/* Move-in & Duration */}
                     <td className="px-6 py-4 text-xs space-y-1">
                       <div>
                         <strong>Move-in:</strong>{" "}
@@ -119,7 +116,6 @@ export default function AdminRentalModerationPage() {
                       </div>
                     </td>
 
-                    {/* Status */}
                     <td className="px-6 py-4">
                       {getStatusBadge(req.status)}
                     </td>

@@ -104,7 +104,7 @@ export default function DynamicAdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* Total Properties */}
+
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -122,7 +122,6 @@ export default function DynamicAdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* Pending Rental Requests */}
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -140,10 +139,8 @@ export default function DynamicAdminDashboard() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Dynamic Content Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Latest Registered Users */}
+
         <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
@@ -172,7 +169,6 @@ export default function DynamicAdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* Recent Rental Requests Activity */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">

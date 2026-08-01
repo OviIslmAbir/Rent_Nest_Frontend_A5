@@ -3,8 +3,21 @@ import PropertyGrid from "@/components/properties/PropertyGrid";
 import { getProperties } from "@/services/property";
 import { Building2, Sparkles } from "lucide-react";
 
-export default async function PropertiesPage() {
-  const properties = await getProperties();
+interface PropertiesPageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function PropertiesPage({
+  searchParams,
+}: PropertiesPageProps) {
+  const params = await searchParams;
+
+  const location =
+    typeof params.location === "string" ? params.location : undefined;
+  const category =
+    typeof params.category === "string" ? params.category : undefined;
+
+  const properties = await getProperties({ location, category });
 
   return (
     <main className="min-h-screen  text-white selection:bg-cyan-500 selection:text-black">

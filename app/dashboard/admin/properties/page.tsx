@@ -27,7 +27,6 @@ import {
   Home,
 } from "lucide-react";
 
-// Extend base PropertyItem to safely support optional landlord details
 interface ExtendedPropertyItem extends BasePropertyItem {
   landlord?: {
     name?: string;
@@ -40,7 +39,7 @@ const AdminPropertyPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  // Fetch all landlord properties from Backend
+
   useEffect(() => {
     const fetchProperties = async () => {
       setLoading(true);
@@ -57,7 +56,7 @@ const AdminPropertyPage = () => {
     fetchProperties();
   }, []);
 
-  // Filter properties by Search Term (Title, Landlord Name/Email)
+
   const filteredProperties = properties.filter((item) => {
     const searchLower = searchTerm.toLowerCase();
     const titleMatch = item.title?.toLowerCase().includes(searchLower);
@@ -81,7 +80,7 @@ const AdminPropertyPage = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8">
-      {/* Top Header */}
+
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">All Properties</h1>
@@ -98,7 +97,7 @@ const AdminPropertyPage = () => {
         </Badge>
       </div>
 
-      {/* Main Content Card */}
+
       <Card>
         <CardHeader>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -112,7 +111,6 @@ const AdminPropertyPage = () => {
               </CardDescription>
             </div>
 
-            {/* Search Input Bar */}
             <div className="relative w-full md:w-72">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -160,7 +158,7 @@ const AdminPropertyPage = () => {
                         </div>
                       </TableCell>
 
-                      {/* Landlord Info */}
+
                       <TableCell>
                         <div className="flex items-center gap-2 text-sm">
                           <User className="h-4 w-4 text-slate-400" />

@@ -12,7 +12,10 @@ import {
   User,
   ArrowLeft,
   PlusCircle,
+  LogOut,
 } from "lucide-react";
+import { logoutAction } from "@/app/auth/_actions/logoutActions";
+
 
 type UserRole = "TENANT" | "LANDLORD" | "ADMIN";
 
@@ -49,7 +52,7 @@ export default function DashboardSidebar({ userRole }: { userRole?: UserRole }) 
       { name: "Properties", href: "/dashboard/landlord/properties", icon: Building2 },
       { name: "Add Property", href: "/dashboard/landlord/properties/new", icon: PlusCircle },
       { name: "Rental Requests", href: "/dashboard/landlord/requests", icon: Home },
-      { name: "Reviews", href: "/dashboard/landlord/reviews", icon: Star }, // 👈 Reviews যুক্ত করা হলো
+      { name: "Reviews", href: "/dashboard/landlord/reviews", icon: Star },
       { name: "Profile", href: "/dashboard/landlord/profile", icon: User },
     ],
     ADMIN: [
@@ -64,6 +67,11 @@ export default function DashboardSidebar({ userRole }: { userRole?: UserRole }) 
   const currentMenu = menu[activeRole] || menu.TENANT;
 
   const hasExactMatch = currentMenu.some((item) => pathname === item.href);
+
+  const handleLogout = async () => {
+    await logoutAction();
+    window.location.href = "/auth/login";
+  };
 
   return (
     <aside className="fixed left-0 top-0 flex h-screen w-72 flex-col justify-between border-r border-slate-100 bg-white/80 backdrop-blur-xl shadow-xl shadow-slate-200/50 z-50">
@@ -133,6 +141,18 @@ export default function DashboardSidebar({ userRole }: { userRole?: UserRole }) 
           />
           <span>Back to Home</span>
         </Link>
+
+        <button
+          onClick={handleLogout}
+          type="button"
+          className="flex items-center justify-center gap-2 w-full rounded-2xl border border-rose-100 bg-rose-50/50 px-4 py-3 text-sm font-semibold text-rose-600 transition-all duration-300 hover:border-rose-200 hover:bg-rose-100 hover:shadow-sm group cursor-pointer"
+        >
+          <LogOut
+            size={18}
+            className="transition-transform duration-300 group-hover:-translate-x-0.5"
+          />
+          <span>Log Out</span>
+        </button>
 
         <div className="rounded-2xl bg-gradient-to-b from-slate-50 to-slate-100/80 p-3.5 border border-slate-100/80 text-center">
           <p className="text-xs text-slate-500 font-medium">Logged in as</p>

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MapPin, Search, Home, DollarSign } from "lucide-react";
+import { MapPin, Search, Home, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import toast from "react-hot-toast";
 import {
   Select,
   SelectContent,
@@ -13,93 +14,136 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface Category {
+  id: string;
+  name: string;
+}
+
 export default function SearchProperty() {
   const router = useRouter();
 
   const [location, setLocation] = useState("");
-  const [category, setCategory] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
+  const [category, setCategory] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        setLoadingCategories(true);
+
+        const res = await fetch(
+          "https://rentnest-nine.vercel.app/api/categories",
+          {
+            cache: "no-store",
+          }
+        );
+
+        const result = await res.json();
+        setCategories(Array.isArray(result) ? result : result.data || []);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    loadCategories();
+  }, []);
 
   const handleSearch = () => {
+    const trimmedLocation = location.trim();
+
+    if (!trimmedLocation && (!category || category === "all")) {
+      toast.error("Please enter a location or select a category");
+      return;
+    }
+
     const params = new URLSearchParams();
 
-    if (location) params.set("location", location);
-    if (category && category !== "all") params.set("category", category);
-    if (maxPrice && maxPrice !== "all") params.set("maxPrice", maxPrice);
+    if (trimmedLocation) {
+      params.set("location", trimmedLocation);
+    }
 
-    router.push(`/properties?${params.toString()}`);
+    if (category && category !== "all") {
+      params.set("category", category);
+    }
+
+    toast.success("Searching properties...");
+
+    const queryString = params.toString();
+    router.push(queryString ? `/properties?${queryString}` : "/properties");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
   };
 
   return (
     <section className="-mt-14 relative z-20 px-6">
-      <div className="max-w-6xl mx-auto bg-white/90 backdrop-blur-xl shadow-2xl rounded-3xl p-6 md:p-8 border border-slate-100">
+      <div className="max-w-6xl mx-auto rounded-3xl border border-slate-100 bg-white/90 p-6 shadow-2xl backdrop-blur-xl md:p-8">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold text-slate-900">
             Find Your Perfect Home
           </h2>
-          <p className="text-gray-500 mt-1">
+
+          <p className="mt-1 text-sm font-medium text-slate-500">
             Search from thousands of verified rental properties
           </p>
         </div>
 
-        <div className="grid md:grid-cols-4 gap-4">
-          {/* Location Input */}
-          <div className="flex items-center gap-3 border rounded-xl px-4 py-2 bg-gray-50 hover:bg-white hover:shadow-md transition">
-            <div className="bg-blue-100 p-2 rounded-lg">
-              <MapPin size={20} className="text-blue-600" />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3 items-center">
+          <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 transition-all focus-within:border-blue-400 focus-within:bg-white focus-within:shadow-sm">
+            <div className="rounded-xl bg-blue-50 p-2 text-blue-600 shrink-0">
+              <MapPin size={18} />
             </div>
+
             <Input
-              type="text"
-              placeholder="Location..."
+              placeholder="City or Area..."
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="bg-transparent border-none outline-none shadow-none focus-visible:ring-0 text-sm p-0"
+              onKeyDown={handleKeyDown}
+              className="border-none bg-transparent p-0 shadow-none focus-visible:ring-0 text-sm font-medium text-slate-800 placeholder:text-slate-400"
             />
           </div>
 
-
-          <div className="flex items-center gap-3 border rounded-xl px-4 py-2 bg-gray-50 hover:bg-white hover:shadow-md transition">
-            <div className="bg-purple-100 p-2 rounded-lg">
-              <Home size={20} className="text-purple-600" />
+          <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 transition-all focus-within:border-purple-400 focus-within:bg-white focus-within:shadow-sm">
+            <div className="rounded-xl bg-purple-50 p-2 text-purple-600 shrink-0">
+              <Home size={18} />
             </div>
-            <Select value={category} onValueChange={(val) => setCategory(val)}>
-              <SelectTrigger className="bg-transparent border-none outline-none shadow-none focus:ring-0 text-sm p-0 h-auto text-slate-700">
-                <SelectValue placeholder="Property Type" />
+
+            <Select value={category ?? undefined} onValueChange={setCategory}>
+              <SelectTrigger className="border-none bg-transparent p-0 shadow-none focus:ring-0 text-sm font-medium w-full text-slate-800">
+                <SelectValue placeholder="Property Category" />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="apartment">Apartment</SelectItem>
-                <SelectItem value="house">House</SelectItem>
-                <SelectItem value="room">Room / Sublet</SelectItem>
+
+              <SelectContent className="rounded-2xl border-slate-100 shadow-xl">
+                <SelectItem value="all">All Categories</SelectItem>
+
+                {loadingCategories ? (
+                  <div className="flex items-center justify-center gap-2 p-2 text-sm text-slate-500">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Loading...
+                  </div>
+                ) : (
+                  categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.name}>
+                      {cat.name}
+                    </SelectItem>
+                  ))
+                )}
               </SelectContent>
             </Select>
           </div>
-
-
-          <div className="flex items-center gap-3 border rounded-xl px-4 py-2 bg-gray-50 hover:bg-white hover:shadow-md transition">
-            <div className="bg-green-100 p-2 rounded-lg">
-              <DollarSign size={20} className="text-green-600" />
-            </div>
-            <Select value={maxPrice} onValueChange={(val) => setMaxPrice(val)}>
-              <SelectTrigger className="bg-transparent border-none outline-none shadow-none focus:ring-0 text-sm p-0 h-auto text-slate-700">
-                <SelectValue placeholder="Price Range" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Any Price</SelectItem>
-                <SelectItem value="10000">Up to $10,000</SelectItem>
-                <SelectItem value="25000">Up to $25,000</SelectItem>
-                <SelectItem value="50000">Up to $50,000</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
 
           <Button
             onClick={handleSearch}
-            className="h-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] transition"
+            className="group w-full h-[48px] rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-700 hover:via-indigo-700 hover:to-violet-700 text-white font-bold text-sm tracking-wide shadow-lg shadow-blue-500/25 hover:shadow-indigo-500/35 hover:scale-[1.01] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer border-none"
           >
-            <Search size={20} />
-            Search Home
+            <Search className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
+            <span>Search Home</span>
           </Button>
         </div>
       </div>

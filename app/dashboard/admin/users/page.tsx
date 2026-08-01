@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { getAllUsers, updateUserByAdmin, UserItem } from "@/services/admin";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, ShieldCheck, UserCheck, Users, Ban } from "lucide-react";
+import { Loader2, UserCheck, Users, Ban } from "lucide-react";
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<UserItem[]>([]);
@@ -23,48 +24,60 @@ export default function AdminUsersPage() {
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true);
-      const data = await getAllUsers();
-      setUsers(data);
-      setLoading(false);
+      try {
+        const data = await getAllUsers();
+        setUsers(data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        toast.error("Failed to load users list.");
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchUsers();
   }, []);
 
+  const handleStatusToggle = async (user: UserItem) => {
+    setActionLoadingId(user.id);
 
-const handleStatusToggle = async (user: UserItem) => {
-  setActionLoadingId(user.id);
+    const isCurrentlyBlocked = user.isBlocked ?? (user.status === "BLOCKED");
+    const nextBlockedState = !isCurrentlyBlocked;
 
-  const isCurrentlyBlocked = user.isBlocked ?? (user.status === "BLOCKED");
-  const nextBlockedState = !isCurrentlyBlocked;
+    const payload = {
+      isBlocked: nextBlockedState,
+    };
 
+    const toastId = toast.loading(
+      nextBlockedState ? "Blocking user..." : "Unblocking user..."
+    );
 
-  const payload = {
-    isBlocked: nextBlockedState,
+    try {
+      const res = await updateUserByAdmin(user.id, payload);
 
+      if (res?.success !== false) {
+        setUsers((prev) =>
+          prev.map((u) =>
+            u.id === user.id
+              ? { ...u, isBlocked: nextBlockedState, status: nextBlockedState ? "BLOCKED" : "ACTIVE" }
+              : u
+          )
+        );
+        toast.success(
+          `User successfully ${nextBlockedState ? "blocked" : "unblocked"}!`,
+          { id: toastId }
+        );
+      } else {
+        toast.error(res?.message || "Failed to update user status.", { id: toastId });
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+      toast.error("Something went wrong while updating status.", { id: toastId });
+    } finally {
+      setActionLoadingId(null);
+    }
   };
 
-  try {
-    const res = await updateUserByAdmin(user.id, payload);
-
-    if (res?.success !== false) {
-      setUsers((prev) =>
-        prev.map((u) =>
-          u.id === user.id
-            ? { ...u, isBlocked: nextBlockedState, status: nextBlockedState ? "BLOCKED" : "ACTIVE" }
-            : u
-        )
-      );
-    } else {
-      alert(res?.message || "Failed to update user status.");
-    }
-  } catch (error) {
-    console.error("Error updating status:", error);
-    alert("Something went wrong while updating status.");
-  } finally {
-    setActionLoadingId(null);
-  }
-};
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       <div className="flex justify-between items-center">
