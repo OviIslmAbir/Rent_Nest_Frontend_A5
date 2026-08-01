@@ -46,7 +46,8 @@ export default function DashboardSidebar({ userRole }: { userRole?: UserRole }) 
     ],
     LANDLORD: [
       { name: "Dashboard", href: "/dashboard/landlord", icon: LayoutDashboard },
-      { name: "Add Property", href: "/dashboard/landlord/properties/new", icon: PlusCircle }, 
+      { name: "Properties", href: "/dashboard/landlord/properties", icon: Building2 },
+      { name: "Add Property", href: "/dashboard/landlord/properties/new", icon: PlusCircle },
       { name: "Rental Requests", href: "/dashboard/landlord/requests", icon: Home },
       { name: "Profile", href: "/dashboard/landlord/profile", icon: User },
     ],
@@ -54,12 +55,15 @@ export default function DashboardSidebar({ userRole }: { userRole?: UserRole }) 
       { name: "Dashboard", href: "/dashboard/admin", icon: LayoutDashboard },
       { name: "Users-Management", href: "/dashboard/admin/users", icon: Users },
       { name: "Properties", href: "/dashboard/admin/properties", icon: Building2 },
-            { name: "Rental Requests", href: "/dashboard/admin/requests", icon: Home },
+      { name: "Rental Requests", href: "/dashboard/admin/requests", icon: Home },
       { name: "Profile", href: "/dashboard/admin/profile", icon: User },
     ],
   };
 
   const currentMenu = menu[activeRole] || menu.TENANT;
+
+  // চেক করবে মেনুর কোনোটির সাথে Exact Match আছে কিনা
+  const hasExactMatch = currentMenu.some((item) => pathname === item.href);
 
   return (
     <aside className="fixed left-0 top-0 flex h-screen w-72 flex-col justify-between border-r border-slate-100 bg-white/80 backdrop-blur-xl shadow-xl shadow-slate-200/50 z-50">
@@ -85,14 +89,11 @@ export default function DashboardSidebar({ userRole }: { userRole?: UserRole }) 
           {currentMenu.map((item) => {
             const Icon = item.icon;
 
-            const isRootDashboard =
-              item.href === "/dashboard/tenant" ||
-              item.href === "/dashboard/landlord" ||
-              item.href === "/dashboard/admin";
-
-            const isActive = isRootDashboard
+            // যদি কোনো মেনু আইটেমের সাথে Exact Match মিলে যায়, তবে শুধুমাত্র সেটাই active হবে।
+            // কোনো নির্দিষ্ট ম্যাচ না থাকলে (যেমন Sub-route বা Edit page-এ থাকলে) startsWith চেক করবে।
+            const isActive = hasExactMatch
               ? pathname === item.href
-              : pathname === item.href || pathname.startsWith(`${item.href}/`);
+              : pathname.startsWith(`${item.href}/`);
 
             return (
               <Link
