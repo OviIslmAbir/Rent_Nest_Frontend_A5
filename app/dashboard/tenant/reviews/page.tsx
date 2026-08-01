@@ -34,6 +34,7 @@ export default function ReviewPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/immutability
     loadProperties();
   }, []);
 
@@ -48,15 +49,15 @@ const loadProperties = async () => {
       throw new Error(res.message);
     }
 
-    const properties = res.data ?? [];
+    const properties = (res.data as PropertyOption[]) ?? [];
 
     setProperties(properties);
 
     if (properties.length > 0) {
       setSelectedPropertyId(properties[0].id);
     }
-  } catch (err: any) {
-    setError(err.message || "Failed to load properties.");
+  } catch (err: unknown) {
+    setError(err instanceof Error ? err.message : "Failed to load properties.");
   } finally {
     setFetching(false);
   }
@@ -106,16 +107,16 @@ const loadProperties = async () => {
 
       console.log("Review Response:", res);
 
-      if (!res.success && !res.id) {
+      if (!res.success) {
         throw new Error(res.message || "Failed to submit review.");
       }
 
       setSuccess(true);
       resetForm();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
 
-      setError(err.message || "Failed to submit review.");
+      setError(err instanceof Error ? err.message : "Failed to submit review.");
     } finally {
       setLoading(false);
     }

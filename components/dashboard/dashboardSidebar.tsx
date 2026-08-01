@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -13,9 +14,10 @@ import {
   ArrowLeft,
   PlusCircle,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react";
 import { logoutAction } from "@/app/auth/_actions/logoutActions";
-
 
 type UserRole = "TENANT" | "LANDLORD" | "ADMIN";
 
@@ -27,6 +29,7 @@ interface MenuItem {
 
 export default function DashboardSidebar({ userRole }: { userRole?: UserRole }) {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
 
   let detectedRole: UserRole = "TENANT";
   if (pathname.startsWith("/dashboard/landlord")) {
@@ -65,7 +68,6 @@ export default function DashboardSidebar({ userRole }: { userRole?: UserRole }) 
   };
 
   const currentMenu = menu[activeRole] || menu.TENANT;
-
   const hasExactMatch = currentMenu.some((item) => pathname === item.href);
 
   const handleLogout = async () => {
@@ -73,94 +75,140 @@ export default function DashboardSidebar({ userRole }: { userRole?: UserRole }) 
     window.location.href = "/auth/login";
   };
 
+  const toggleSidebar = () => setIsOpen(!isOpen);
+  const closeSidebar = () => setIsOpen(false);
+
   return (
-    <aside className="fixed left-0 top-0 flex h-screen w-72 flex-col justify-between border-r border-slate-100 bg-white/80 backdrop-blur-xl shadow-xl shadow-slate-200/50 z-50">
-      <div>
-        <div className="flex items-center justify-between p-6 pb-4">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div>
-              <h2 className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
-                RENTNEST
-              </h2>
-              <p className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
-                {activeRole} PANEL
-              </p>
-            </div>
-          </Link>
-        </div>
-
-        <div className="px-6 my-2">
-          <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
-        </div>
-
-        <nav className="p-4 space-y-1.5">
-          {currentMenu.map((item, index) => {
-            const Icon = item.icon;
-
-            const isActive = hasExactMatch
-              ? pathname === item.href
-              : index !== 0 && pathname.startsWith(`${item.href}/`);
-
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`relative flex items-center gap-3.5 rounded-2xl px-4 py-3 text-sm font-medium transition-all duration-300 group ${
-                  isActive
-                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/25"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-blue-600"
-                }`}
-              >
-                {isActive && (
-                  <span className="absolute -left-4 top-1/2 h-6 w-1.5 -translate-y-1/2 rounded-r-full bg-blue-600" />
-                )}
-
-                <Icon
-                  size={20}
-                  className={`transition-transform duration-300 ${
-                    isActive
-                      ? "text-white"
-                      : "text-slate-400 group-hover:scale-110 group-hover:text-blue-600"
-                  }`}
-                />
-                <span>{item.name}</span>
-              </Link>
-            );
-          })}
-        </nav>
-      </div>
-
-      <div className="p-4 space-y-3">
-        <Link
-          href="/"
-          className="flex items-center justify-center gap-2 w-full rounded-2xl border border-slate-200/80 bg-slate-50/50 px-4 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 hover:shadow-sm group"
-        >
-          <ArrowLeft
-            size={18}
-            className="transition-transform duration-300 group-hover:-translate-x-1"
-          />
-          <span>Back to Home</span>
+    <>
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-white/90 backdrop-blur-md border-b border-slate-100 z-40 px-4 flex items-center justify-between shadow-sm">
+        <Link href="/" className="flex items-center gap-2">
+          <div>
+            <h2 className="text-lg font-extrabold tracking-tight bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
+              RENTNEST
+            </h2>
+            <p className="text-[9px] font-semibold tracking-wider text-slate-400 uppercase">
+              {activeRole} PANEL
+            </p>
+          </div>
         </Link>
 
         <button
-          onClick={handleLogout}
-          type="button"
-          className="flex items-center justify-center gap-2 w-full rounded-2xl border border-rose-100 bg-rose-50/50 px-4 py-3 text-sm font-semibold text-rose-600 transition-all duration-300 hover:border-rose-200 hover:bg-rose-100 hover:shadow-sm group cursor-pointer"
+          onClick={toggleSidebar}
+          className="p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors"
+          aria-label="Toggle Navigation"
         >
-          <LogOut
-            size={18}
-            className="transition-transform duration-300 group-hover:-translate-x-0.5"
-          />
-          <span>Log Out</span>
+          {isOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
-
-        <div className="rounded-2xl bg-gradient-to-b from-slate-50 to-slate-100/80 p-3.5 border border-slate-100/80 text-center">
-          <p className="text-xs text-slate-500 font-medium">Logged in as</p>
-          <span className="inline-block mt-0.5 rounded-full bg-blue-100/80 px-3 py-0.5 text-[11px] font-bold text-blue-700">
-            {activeRole}
-          </span>
-        </div>
       </div>
-    </aside>
+
+      {isOpen && (
+        <div
+          onClick={closeSidebar}
+          className="md:hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 transition-opacity"
+        />
+      )}
+
+      <aside
+        className={`fixed left-0 top-0 flex h-screen w-72 flex-col justify-between border-r border-slate-100 bg-white/95 md:bg-white/80 backdrop-blur-xl shadow-xl shadow-slate-200/50 z-50 transition-transform duration-300 ease-in-out ${
+          isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        }`}
+      >
+        <div>
+          <div className="flex items-center justify-between p-6 pb-4">
+            <Link href="/" onClick={closeSidebar} className="flex items-center gap-2.5 group">
+              <div>
+                <h2 className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
+                  RENTNEST
+                </h2>
+                <p className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
+                  {activeRole} PANEL
+                </p>
+              </div>
+            </Link>
+
+            <button
+              onClick={closeSidebar}
+              className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          <div className="px-6 my-2">
+            <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+          </div>
+
+          <nav className="p-4 space-y-1.5 overflow-y-auto max-h-[calc(100vh-280px)] md:max-h-none">
+            {currentMenu.map((item, index) => {
+              const Icon = item.icon;
+
+              const isActive = hasExactMatch
+                ? pathname === item.href
+                : index !== 0 && pathname.startsWith(`${item.href}/`);
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={closeSidebar}
+                  className={`relative flex items-center gap-3.5 rounded-2xl px-4 py-3 text-sm font-medium transition-all duration-300 group ${
+                    isActive
+                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/25"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-blue-600"
+                  }`}
+                >
+                  {isActive && (
+                    <span className="absolute -left-4 top-1/2 h-6 w-1.5 -translate-y-1/2 rounded-r-full bg-blue-600" />
+                  )}
+
+                  <Icon
+                    size={20}
+                    className={`transition-transform duration-300 ${
+                      isActive
+                        ? "text-white"
+                        : "text-slate-400 group-hover:scale-110 group-hover:text-blue-600"
+                    }`}
+                  />
+                  <span>{item.name}</span>
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        <div className="p-4 space-y-3 bg-white">
+          <Link
+            href="/"
+            onClick={closeSidebar}
+            className="flex items-center justify-center gap-2 w-full rounded-2xl border border-slate-200/80 bg-slate-50/50 px-4 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 hover:shadow-sm group"
+          >
+            <ArrowLeft
+              size={18}
+              className="transition-transform duration-300 group-hover:-translate-x-1"
+            />
+            <span>Back to Home</span>
+          </Link>
+
+          <button
+            onClick={handleLogout}
+            type="button"
+            className="flex items-center justify-center gap-2 w-full rounded-2xl border border-rose-100 bg-rose-50/50 px-4 py-3 text-sm font-semibold text-rose-600 transition-all duration-300 hover:border-rose-200 hover:bg-rose-100 hover:shadow-sm group cursor-pointer"
+          >
+            <LogOut
+              size={18}
+              className="transition-transform duration-300 group-hover:-translate-x-0.5"
+            />
+            <span>Log Out</span>
+          </button>
+
+          <div className="rounded-2xl bg-gradient-to-b from-slate-50 to-slate-100/80 p-3.5 border border-slate-100/80 text-center">
+            <p className="text-xs text-slate-500 font-medium">Logged in as</p>
+            <span className="inline-block mt-0.5 rounded-full bg-blue-100/80 px-3 py-0.5 text-[11px] font-bold text-blue-700">
+              {activeRole}
+            </span>
+          </div>
+        </div>
+      </aside>
+    </>
   );
 }
