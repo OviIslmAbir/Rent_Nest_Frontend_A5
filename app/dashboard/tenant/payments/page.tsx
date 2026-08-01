@@ -1,5 +1,5 @@
 import PayButton from "@/components/tenant/PayButton";
-import PaymentToast from "@/components/tenant/PaymentToast";
+import PaymentStatusToast from "@/components/tenant/PaymentStatusToast";
 import { getMyPayments } from "@/services/payment";
 import { getMyRentalRequests } from "@/services/rental";
 import { Receipt, Clock, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
@@ -10,6 +10,14 @@ type Props = {
 
 export default async function TenantPaymentsPage({ searchParams }: Props) {
   const resolvedSearchParams = await searchParams;
+
+  const isSuccess =
+    resolvedSearchParams.payment_success === "true" ||
+    resolvedSearchParams.success === "true";
+
+  const isCanceled =
+    resolvedSearchParams.canceled === "true" ||
+    resolvedSearchParams.cancelled === "true";
 
   let payments: any[] = [];
   let pendingRentals: any[] = [];
@@ -39,7 +47,7 @@ export default async function TenantPaymentsPage({ searchParams }: Props) {
 
   return (
     <div className="space-y-8 p-6 md:p-10 max-w-7xl mx-auto">
-      <PaymentToast searchParams={resolvedSearchParams} />
+      <PaymentStatusToast success={isSuccess} canceled={isCanceled} />
 
       <div className="rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 p-8 text-white shadow-lg">
         <h1 className="text-3xl font-bold">Payments & Receipts 💳</h1>

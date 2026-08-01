@@ -50,7 +50,7 @@ export default async function PropertyDetailsPage({ params }: Props) {
                 {property.category?.name}
               </span>
 
-              <h1 className="text-4xl font-bold mt-4">{property.title}</h1>
+              <h1 className="text-4xl font-bold mt-4 text-slate-900">{property.title}</h1>
 
               <div className="flex items-center gap-2 text-gray-500 mt-3">
                 <MapPin size={18} />
@@ -64,32 +64,32 @@ export default async function PropertyDetailsPage({ params }: Props) {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
               <div className="bg-white rounded-xl shadow p-5 text-center">
                 <BedDouble className="mx-auto text-blue-600" />
-                <p className="mt-2 font-bold">{property.bedrooms}</p>
+                <p className="mt-2 font-bold text-slate-900">{property.bedrooms}</p>
                 <span className="text-sm text-gray-500">Bedrooms</span>
               </div>
 
               <div className="bg-white rounded-xl shadow p-5 text-center">
                 <Bath className="mx-auto text-blue-600" />
-                <p className="mt-2 font-bold">{property.bathrooms}</p>
+                <p className="mt-2 font-bold text-slate-900">{property.bathrooms}</p>
                 <span className="text-sm text-gray-500">Bathrooms</span>
               </div>
 
               <div className="bg-white rounded-xl shadow p-5 text-center">
                 <Building2 className="mx-auto text-blue-600" />
-                <p className="mt-2 font-bold">{property.category?.name}</p>
+                <p className="mt-2 font-bold text-slate-900">{property.category?.name}</p>
                 <span className="text-sm text-gray-500">Category</span>
               </div>
 
               <div className="bg-white rounded-xl shadow p-5 text-center">
                 <User className="mx-auto text-blue-600" />
-                <p className="mt-2 font-bold capitalize">{property.status}</p>
+                <p className="mt-2 font-bold capitalize text-slate-900">{property.status}</p>
                 <span className="text-sm text-gray-500">Status</span>
               </div>
             </div>
 
             {/* Description */}
             <div className="bg-white rounded-2xl shadow p-6">
-              <h2 className="text-2xl font-bold mb-4">Description</h2>
+              <h2 className="text-2xl font-bold mb-4 text-slate-900">Description</h2>
               <p className="text-gray-600 leading-8">{property.description}</p>
             </div>
           </div>
@@ -106,22 +106,29 @@ export default async function PropertyDetailsPage({ params }: Props) {
             <div className="mt-6 space-y-5">
               <div>
                 <h4 className="font-semibold text-gray-700">Landlord</h4>
-                <p className="mt-1">{property.landlord?.name}</p>
+                <p className="mt-1 text-slate-900 font-medium">{property.landlord?.name}</p>
               </div>
 
               <div>
                 <h4 className="font-semibold text-gray-700">Email</h4>
-                <p className="mt-1 break-all">{property.landlord?.email}</p>
+                <p className="mt-1 break-all text-slate-800">{property.landlord?.email}</p>
               </div>
 
               <div>
                 <h4 className="font-semibold text-gray-700">Status</h4>
-                <span className="inline-block mt-2 rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
+                <span className={`inline-block mt-2 rounded-full px-3 py-1 text-sm font-medium capitalize ${
+                  property.status?.toLowerCase() === "available"
+                    ? "bg-emerald-100 text-emerald-700"
+                    : property.status?.toLowerCase() === "rented"
+                    ? "bg-amber-100 text-amber-700"
+                    : "bg-rose-100 text-rose-700"
+                }`}>
                   {property.status}
                 </span>
               </div>
             </div>
 
+            {/* Request Rental Button Component */}
             <RequestRentalButton
               propertyId={property.id}
               alreadyRequested={alreadyRequested}

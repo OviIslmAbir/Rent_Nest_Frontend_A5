@@ -37,69 +37,30 @@ export default function ReviewPage() {
     loadProperties();
   }, []);
 
-  const loadProperties = async () => {
-    setFetching(true);
-    setError("");
+const loadProperties = async () => {
+  setFetching(true);
+  setError("");
 
-    try {
-      const res = await getMyPaidProperties();
-      console.log("Payments API Raw Response:", res);
+  try {
+    const res = await getMyPaidProperties();
 
-
-      let rawList: any[] = [];
-      if (Array.isArray(res)) {
-        rawList = res;
-      } else if (Array.isArray(res?.data)) {
-        rawList = res.data;
-      } else if (Array.isArray(res?.data?.data)) {
-        rawList = res.data.data;
-      } else if (res?.success === false) {
-        throw new Error(res?.message || "Failed to load paid properties.");
-      }
-
-
-      const propertyMap = new Map<string, string>();
-
-      rawList.forEach((item: any) => {
-
-        const propId =
-          item.propertyId ||
-          item.property?.id ||
-          item.rentalRequest?.propertyId ||
-          item.rentalRequest?.property?.id ||
-          item.rental?.propertyId ||
-          item.rental?.property?.id;
-
-   
-        const propTitle =
-          item.property?.title ||
-          item.rentalRequest?.property?.title ||
-          item.rental?.property?.title ||
-          item.title ||
-          "Property";
-
-        if (propId) {
-          propertyMap.set(propId, propTitle);
-        }
-      });
-
-      const formattedProperties: PropertyOption[] = Array.from(
-        propertyMap.entries()
-      ).map(([id, title]) => ({ id, title }));
-
-      setProperties(formattedProperties);
-
-      if (formattedProperties.length > 0) {
-        setSelectedPropertyId(formattedProperties[0].id);
-      }
-    } catch (err: any) {
-      console.error("Error loading properties:", err);
-      setError(err.message || "Failed to load your paid properties.");
-    } finally {
-      setFetching(false);
+    if (!res.success) {
+      throw new Error(res.message);
     }
-  };
 
+    const properties = res.data ?? [];
+
+    setProperties(properties);
+
+    if (properties.length > 0) {
+      setSelectedPropertyId(properties[0].id);
+    }
+  } catch (err: any) {
+    setError(err.message || "Failed to load properties.");
+  } finally {
+    setFetching(false);
+  }
+};
   const resetForm = () => {
     setRating(0);
     setHoverRating(0);

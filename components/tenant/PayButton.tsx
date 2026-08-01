@@ -20,7 +20,7 @@ export default function PayButton({ rentalRequestId, amount }: PayButtonProps) {
 
       const response = await createPaymentAction(rentalRequestId);
 
-      // ব্যাকএন্ড থেকে checkoutUrl পাওয়ার পর Stripe-এ রিডাইরেক্ট করা হচ্ছে
+
       if (response?.success && response?.data?.checkoutUrl) {
         window.location.href = response.data.checkoutUrl;
       } else {

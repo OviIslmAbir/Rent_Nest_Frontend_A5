@@ -1,96 +1,151 @@
 "use client";
 
-import { useState } from "react";
-import { Search, MapPin, Home, SlidersHorizontal, RotateCcw } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { Search, MapPin, Home, SlidersHorizontal, RotateCcw, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function PropertyFilter() {
-  const [priceRange, setPriceRange] = useState<number>(2000);
+interface Category {
+  id: string;
+  name: string;
+}
 
+export default function PropertyFilter() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const [location, setLocation] = useState(searchParams.get("location") || "");
+  const [category, setCategory] = useState(searchParams.get("category") || "all");
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        setLoadingCategories(true);
+
+        const res = await fetch(
+          "https://rentnest-nine.vercel.app/api/categories",
+          { cache: "no-store" }
+        );
+
+        const result = await res.json();
+        setCategories(Array.isArray(result) ? result : result.data || []);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    loadCategories();
+  }, []);
+
+  const handleApplyFilters = () => {
+    const params = new URLSearchParams();
+
+    if (location.trim()) {
+      params.set("location", location.trim());
+    }
+
+    if (category && category !== "all") {
+      params.set("category", category);
+    }
+
+    const queryString = params.toString();
+    router.push(queryString ? `${pathname}?${queryString}` : pathname);
+  };
+
+  const handleReset = () => {
+    setLocation("");
+    setCategory("all");
+    router.push(pathname);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleApplyFilters();
+    }
+  };
 
   return (
-    <aside className="bg-white/80 backdrop-blur-xl border border-slate-100 rounded-3xl p-6 shadow-[0_15px_35px_rgba(8,_112,_184,_0.06)] h-fit sticky top-24 z-10 transition-all duration-300">
-
+    <aside className="bg-white/90 backdrop-blur-xl border border-slate-100/80 rounded-3xl p-6 shadow-xl shadow-slate-200/40 h-fit sticky top-24 z-10 transition-all duration-300">
       <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-blue-50 text-blue-600">
+          <div className="p-2.5 rounded-2xl bg-blue-50 text-blue-600 shadow-sm shadow-blue-500/10">
             <SlidersHorizontal size={18} />
           </div>
-          <h2 className="text-xl font-bold text-slate-900">
-            Filter Properties
-          </h2>
+          <div>
+            <h2 className="text-lg font-bold text-slate-900 tracking-tight">
+              Filter Properties
+            </h2>
+            <p className="text-[11px] text-slate-400 font-medium">Refine your search</p>
+          </div>
         </div>
 
-        <button 
-          className="text-xs font-medium text-slate-400 hover:text-blue-600 flex items-center gap-1 transition-colors"
+        <button
+          onClick={handleReset}
+          className="text-xs font-semibold text-slate-400 hover:text-blue-600 flex items-center gap-1.5 transition-all duration-200 cursor-pointer bg-slate-50 hover:bg-blue-50 px-3 py-1.5 rounded-xl"
         >
           <RotateCcw size={12} />
-          Reset
+          <span>Reset</span>
         </button>
       </div>
 
-      <div className="space-y-6">
-
+      <div className="space-y-5">
         <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
             Location
           </label>
-          <div className="relative flex items-center border border-slate-200/80 rounded-2xl px-4 py-3 bg-slate-50/50 focus-within:bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all duration-300">
-            <MapPin size={18} className="text-slate-400 mr-2.5 shrink-0" />
+          <div className="relative flex items-center border border-slate-200/80 rounded-2xl px-4 py-3 bg-slate-50/50 hover:bg-white focus-within:bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all duration-300 shadow-xs">
+            <MapPin size={18} className="text-blue-500 mr-2.5 shrink-0" />
             <input
               type="text"
               placeholder="e.g. Uttara, Dhaka"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="w-full bg-transparent outline-none text-slate-900 placeholder:text-slate-400 text-sm font-medium"
             />
           </div>
         </div>
 
-
         <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
             Property Type
           </label>
-          <div className="relative flex items-center border border-slate-200/80 rounded-2xl px-4 py-3 bg-slate-50/50 focus-within:bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all duration-300">
-            <Home size={18} className="text-slate-400 mr-2.5 shrink-0" />
-            <select className="w-full bg-transparent outline-none text-slate-900 text-sm font-medium cursor-pointer">
-              <option value="all">All Types</option>
-              <option value="apartment">Apartment</option>
-              <option value="house">House / Villa</option>
-              <option value="room">Single Room</option>
-              <option value="duplex">Duplex</option>
+          <div className="relative flex items-center border border-slate-200/80 rounded-2xl px-4 py-3 bg-slate-50/50 hover:bg-white focus-within:bg-white focus-within:border-purple-500 focus-within:ring-4 focus-within:ring-purple-500/10 transition-all duration-300 shadow-xs">
+            <Home size={18} className="text-purple-500 mr-2.5 shrink-0" />
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full bg-transparent outline-none text-slate-900 text-sm font-medium cursor-pointer"
+            >
+              <option value="all">All Categories</option>
+
+              {loadingCategories ? (
+                <option disabled>Loading...</option>
+              ) : (
+                categories.map((cat) => (
+                  <option key={cat.id} value={cat.name}>
+                    {cat.name}
+                  </option>
+                ))
+              )}
             </select>
+            {loadingCategories && (
+              <Loader2 className="h-4 w-4 animate-spin text-slate-400 ml-2 shrink-0" />
+            )}
           </div>
         </div>
 
-
-
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-              Max Price
-            </label>
-            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">
-              ${priceRange} / mo
-            </span>
-          </div>
-          <input
-            type="range"
-            min="200"
-            max="5000"
-            step="100"
-            value={priceRange}
-            onChange={(e) => setPriceRange(Number(e.target.value))}
-            className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
-          />
-          <div className="flex justify-between text-[11px] font-medium text-slate-400">
-            <span>$200</span>
-            <span>$5,000+</span>
-          </div>
-        </div>
-
-
-        <Button className="w-full h-12 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white font-semibold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:opacity-95 transition-all duration-300 flex items-center justify-center gap-2 active:scale-[0.99] mt-2">
-          <Search size={18} />
+        <Button
+          onClick={handleApplyFilters}
+          className="group w-full h-12 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-700 hover:via-indigo-700 hover:to-violet-700 text-white font-bold text-sm shadow-lg shadow-blue-500/20 hover:shadow-indigo-500/30 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer border-none mt-2 active:scale-[0.98]"
+        >
+          <Search size={18} className="transition-transform duration-300 group-hover:scale-110" />
           <span>Apply Filters</span>
         </Button>
       </div>
