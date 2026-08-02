@@ -9,7 +9,6 @@ export default function Footer() {
     <footer className="bg-gray-950 text-gray-300 mt-20">
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid md:grid-cols-4 gap-10">
-          {/* Brand */}
           <div>
             <h2 className="text-3xl font-bold text-white">
               Rent<span className="text-blue-500">Nest</span>
@@ -39,7 +38,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
+
           <div>
             <h3 className="text-white font-semibold text-lg">Quick Links</h3>
 
@@ -79,7 +78,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Property */}
+
           <div>
             <h3 className="text-white font-semibold text-lg">Properties</h3>
 
@@ -98,7 +97,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
+
           <div>
             <h3 className="text-white font-semibold text-lg">Contact Us</h3>
 
@@ -122,10 +121,10 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom */}
+
       <div className="border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-3 text-sm">
-          {/* Hardcoded 2026 to keep the copyright year fixed */}
+
           <p>© 2026 RentNest. All rights reserved.</p>
 
           <div className="flex gap-5">

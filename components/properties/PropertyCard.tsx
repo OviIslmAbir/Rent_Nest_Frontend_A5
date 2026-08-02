@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Bath, BedDouble, MapPin, Heart, ArrowUpRight, Sparkles } from "lucide-react";
+import { Bath, BedDouble, MapPin, Heart, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Property } from "@/types/property";
+import { Property } from "@/types";
+
 
 export default function PropertyCard({
   property,
@@ -31,7 +32,6 @@ export default function PropertyCard({
 
         <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
           <span className="inline-flex items-center gap-1 bg-white/90 backdrop-blur-md border border-white/50 text-slate-900 text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm">
-            <Sparkles size={12} className="text-blue-600" />
             Featured
           </span>
 

@@ -13,10 +13,10 @@ export async function rentalRequestAction(payload: RentalPayload) {
   try {
     const result = await createRentalRequest(payload);
     return result;
-  } catch (error: any) {
+  } catch (error: unknown) {
     return {
       success: false,
-      message: error?.message || "Something went wrong in server action",
+      message: (error as Error)?.message || "Something went wrong in server action",
     };
   }
 }

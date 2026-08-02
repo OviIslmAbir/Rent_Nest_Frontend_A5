@@ -1,4 +1,4 @@
-const BASE_URL = typeof window !== "undefined" ? "" : "https://rentnest-nine.vercel.app";
+const BASE_URL = typeof window !== "undefined" ? "" : (process.env.BACK_END_URL);
 
 const getCookie = (name: string): string | null => {
   if (typeof document === "undefined") return null;

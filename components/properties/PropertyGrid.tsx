@@ -1,4 +1,5 @@
-import { Property } from "@/types/property";
+
+import { Property } from "@/types";
 import PropertyCard from "./PropertyCard";
 
 interface Props {

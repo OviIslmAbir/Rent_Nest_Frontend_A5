@@ -1,4 +1,4 @@
-const BASE_URL = "https://rentnest-nine.vercel.app/api";
+const BASE_URL = (process.env.BACK_END_URL);
 
 
 interface GetPropertiesParams {
@@ -25,7 +25,7 @@ export const getProperties = async (params: GetPropertiesParams = {}) => {
   const queryString = query.toString();
 
   const res = await fetch(
-    `https://rentnest-nine.vercel.app/api/properties${
+    `${BASE_URL}/api/properties${
       queryString ? `?${queryString}` : ""
     }`,
     { cache: "no-store" }
@@ -38,7 +38,7 @@ export const getProperties = async (params: GetPropertiesParams = {}) => {
 
 
 export async function getSingleProperty(id: string) {
-  const res = await fetch(`${BASE_URL}/properties/${id}`, {
+  const res = await fetch(`${BASE_URL}/api/properties/${id}`, {
     cache: "no-store",
   });
 

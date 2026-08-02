@@ -25,7 +25,7 @@ export default function DynamicAdminDashboard() {
   const [rentals, setRentals] = useState<RentalRequestItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Fetch live data (Users, Properties & Rental Requests)
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       setLoading(true);
@@ -49,7 +49,6 @@ export default function DynamicAdminDashboard() {
     fetchDashboardData();
   }, []);
 
-  // Compute pending requests metric
   const pendingRequestsCount = rentals.filter(
     (req) => req.status?.toUpperCase() === "PENDING"
   ).length;
@@ -67,7 +66,7 @@ export default function DynamicAdminDashboard() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8">
-      {/* Top Header */}
+
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Admin Overview</h1>
@@ -84,9 +83,9 @@ export default function DynamicAdminDashboard() {
         </Badge>
       </div>
 
-      {/* 3 Stat Overview Cards */}
+
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {/* Total Users */}
+
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">

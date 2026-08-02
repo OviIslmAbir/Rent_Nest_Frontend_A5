@@ -14,7 +14,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://rentnest-nine.vercel.app";
+const BASE_URL = process.env.BACK_END_URL ;
 
 async function getMe() {
   const cookieStore = await cookies();

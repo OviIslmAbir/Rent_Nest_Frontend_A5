@@ -18,8 +18,9 @@ import {
   X,
 } from "lucide-react";
 import { logoutAction } from "@/app/auth/_actions/logoutActions";
+import { UserRole } from "@/types";
 
-type UserRole = "TENANT" | "LANDLORD" | "ADMIN";
+
 
 interface MenuItem {
   name: string;

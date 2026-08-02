@@ -3,24 +3,9 @@
 import { useEffect, useState } from "react";
 import { Star, Loader2, Home, User, Calendar, MessageSquare, AlertCircle } from "lucide-react";
 import { getLandlordReviews } from "@/services/review";
+import { Review } from "@/types";
 
-interface Review {
-  id?: string;
-  _id?: string;
-  rating: number;
-  comment?: string;
-  message?: string;
-  createdAt?: string;
-  tenant?: {
-    name?: string;
-    email?: string;
-  };
-  tenantName?: string;
-  property?: {
-    title?: string;
-  };
-  propertyTitle?: string;
-}
+
 
 export default function LandlordReviewsPage() {
   const [reviews, setReviews] = useState<Review[]>([]);

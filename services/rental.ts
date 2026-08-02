@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 
-const BASE_URL = "https://rentnest-nine.vercel.app";
+const BASE_URL = process.env.BACK_END_URL;
 
 export const getMyRentalRequests = async () => {
   try {

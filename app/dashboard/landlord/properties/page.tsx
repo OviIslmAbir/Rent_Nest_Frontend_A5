@@ -23,30 +23,8 @@ import {
 import toast from "react-hot-toast"; 
 import { Button } from "@/components/ui/button";
 import { landlordService } from "@/services/landlord";
+import { Property } from "@/types/property";
 
-interface Category {
-  id?: string;
-  name: string;
-}
-
-interface Property {
-  id: string;
-  _id?: string;
-  title: string;
-  description?: string;
-  location?: string;
-  address?: string;
-  city?: string;
-  area?: string;
-  rentPrice?: number;
-  price?: number;
-  bedrooms?: number;
-  bathrooms?: number;
-  images?: string[];
-  status?: "AVAILABLE" | "RENTED" | "UNAVAILABLE" | string;
-  category?: Category;
-  createdAt?: string;
-}
 
 export default function LandlordAllProperties() {
   const [properties, setProperties] = useState<Property[]>([]);

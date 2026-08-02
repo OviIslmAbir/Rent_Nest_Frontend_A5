@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 import LayoutWrapper from "@/components/shared/LayoutWrapper";
 import { cookies } from "next/headers";
 import { jwtDecode } from "jwt-decode";
-// import { Toaster } from "@/components/ui/toast";
 import { Toaster } from "react-hot-toast";
+import { UserRole } from "@/types";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   description: "Rental Property Platform",
 };
 
-export type UserRole = "TENANT" | "LANDLORD" | "ADMIN";
+
 
 interface CustomJwtPayload {
   role?: UserRole;

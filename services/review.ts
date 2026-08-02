@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 
-const BASE_URL = "https://rentnest-nine.vercel.app";
+const BASE_URL = process.env.BACK_END_URL;
 
 export interface ReviewPayload {
   propertyId: string;
@@ -54,19 +54,24 @@ export const getMyPaidProperties = async () => {
 
     const payments = Array.isArray(result?.data) ? result.data : [];
 
-    const properties = payments
+    type PropertyItem = {
+      id: string;
+      title: string;
+    };
+
+    const properties: PropertyItem[] = payments
       .filter(
-        (payment: any) =>
+        (payment: { status: string; rentalRequest?: { property?: { id: string; title: string } } }) =>
           payment.status === "COMPLETED" &&
           payment.rentalRequest?.property
       )
-      .map((payment: any) => ({
-        id: payment.rentalRequest.property.id,
-        title: payment.rentalRequest.property.title,
+      .map((payment: { rentalRequest?: { property?: { id: string; title: string } } }) => ({
+        id: payment.rentalRequest!.property!.id,
+        title: payment.rentalRequest!.property!.title,
       }));
 
     const uniqueProperties = Array.from(
-      new Map(properties.map((item) => [item.id, item])).values()
+      new Map(properties.map((item: PropertyItem) => [item.id, item])).values()
     );
 
     return {

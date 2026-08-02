@@ -39,7 +39,7 @@ export default function EditPropertyPage() {
 
         const propRes = await landlordService.getMyProperties();
         const propertyList = Array.isArray(propRes) ? propRes : propRes?.data || [];
-        const currentProp = propertyList.find((p: any) => p.id === propertyId || p._id === propertyId);
+        const currentProp = propertyList.find((p: { id: string; _id: string }) => p.id === propertyId || p._id === propertyId);
 
         if (currentProp) {
           setFormData({

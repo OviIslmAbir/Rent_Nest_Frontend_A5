@@ -174,7 +174,7 @@ const loadProperties = async () => {
 
               {properties.length === 0 ? (
                 <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">
-                  You don't have any completed payments yet.
+                  You don&apos;t have any completed payments yet.
                 </div>
               ) : (
                 <select

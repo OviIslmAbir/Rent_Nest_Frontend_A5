@@ -3,7 +3,8 @@
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "../home/footer";
-type UserRole = "TENANT" | "LANDLORD" | "ADMIN";
+import { UserRole } from "@/types";
+
 
 interface LayoutWrapperProps {
   children: React.ReactNode;

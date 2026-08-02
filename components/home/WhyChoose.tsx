@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ShieldCheck, Zap, LockKeyhole, Sparkles } from "lucide-react";
+import { ShieldCheck, Zap, LockKeyhole } from "lucide-react";
 
 const features = [
   {
@@ -38,7 +38,6 @@ export default function WhyChoose() {
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-200 bg-blue-50 text-blue-600 text-xs sm:text-sm font-semibold tracking-wide uppercase mb-4"
           >
-            <Sparkles className="h-4 w-4 text-blue-500" />
             <span>The RentNest Advantage</span>
           </motion.div>
 

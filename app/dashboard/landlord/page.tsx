@@ -15,19 +15,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { landlordService } from "@/services/landlord";
+import { Property } from "@/types";
 
-interface Property {
-  id?: string;
-  _id?: string;
-  title: string;
-  address?: string;
-  location?: string;
-  rentPrice?: number;
-  price?: number;
-  isBooked?: boolean;
-  status?: string;
-  images?: string[];
-}
+
+
 
 export default function LandlordDashboard() {
   const [loading, setLoading] = useState(true);
@@ -45,9 +36,17 @@ export default function LandlordDashboard() {
         setLoading(true);
         setError(null);
 
-        const fetchPropertiesFn =
+        type Fetcher<T = unknown> = () => Promise<T>;
+        type PropertyService = { getProperties?: Fetcher<unknown> };
+        type RequestService = {
+          getLandlordRequests?: Fetcher<unknown>;
+          getRequests?: Fetcher<unknown>;
+          getMyRequests?: Fetcher<unknown>;
+        };
+
+        const fetchPropertiesFn: Fetcher<unknown> =
           landlordService.getMyProperties ||
-          (landlordService as any).getProperties;
+          (landlordService as PropertyService).getProperties;
         
         const propsRes = await fetchPropertiesFn();
         
@@ -55,18 +54,16 @@ export default function LandlordDashboard() {
         let propertyList: Property[] = [];
         if (Array.isArray(propsRes)) {
           propertyList = propsRes;
-        } else if (Array.isArray(propsRes?.data)) {
-          propertyList = propsRes.data;
-        } else if (Array.isArray(propsRes?.data?.data)) {
-          propertyList = propsRes.data.data;
+        } else if (propsRes && typeof propsRes === "object" && Array.isArray((propsRes as { data?: unknown }).data)) {
+          propertyList = (propsRes as { data: unknown }).data as Property[];
+        } else if (propsRes && typeof propsRes === "object" && Array.isArray((propsRes as { data?: { data?: unknown } }).data?.data)) {
+          propertyList = (propsRes as { data: { data: unknown } }).data.data as Property[];
         }
 
         const rentedEarnings = propertyList.reduce((acc: number, curr: Property) => {
           const isRented = 
             curr.status === "RENTED" || 
-            curr.status === "UNAVAILABLE" || 
-            curr.isBooked === true;
-
+            curr.status === "UNAVAILABLE"
           const price = Number(curr.rentPrice || curr.price || 0);
 
   
@@ -75,25 +72,25 @@ export default function LandlordDashboard() {
 
 
         let requestsCount = 0;
-        const fetchRequestsFn =
-          (landlordService as any).getLandlordRequests ||
-          (landlordService as any).getRequests ||
-          (landlordService as any).getMyRequests;
+        const fetchRequestsFn: Fetcher<unknown> | undefined =
+          (landlordService as RequestService).getLandlordRequests ||
+          (landlordService as RequestService).getRequests ||
+          (landlordService as RequestService).getMyRequests;
 
         if (typeof fetchRequestsFn === "function") {
           const reqRes = await fetchRequestsFn();
-          let reqList: any[] = [];
+          let reqList: { status?: string }[] = [];
           
           if (Array.isArray(reqRes)) {
             reqList = reqRes;
-          } else if (Array.isArray(reqRes?.data)) {
-            reqList = reqRes.data;
-          } else if (Array.isArray(reqRes?.data?.data)) {
-            reqList = reqRes.data.data;
+          } else if (reqRes && typeof reqRes === "object" && Array.isArray((reqRes as { data?: unknown }).data)) {
+            reqList = (reqRes as { data: unknown }).data as { status?: string }[];
+          } else if (reqRes && typeof reqRes === "object" && Array.isArray((reqRes as { data?: { data?: unknown } }).data?.data)) {
+            reqList = (reqRes as { data: { data: unknown } }).data.data as { status?: string }[];
           }
 
           const pendingRequests = reqList.filter(
-            (r: any) => !r.status || r.status === "PENDING" || r.status === "APPROVED"
+            (r: { status?: string }) => !r.status || r.status === "PENDING" || r.status === "APPROVED"
           );
           requestsCount = pendingRequests.length;
         }
@@ -105,7 +102,7 @@ export default function LandlordDashboard() {
 
 
         setRecentProperties(propertyList.slice(0, 3));
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Dashboard overview fetch error:", err);
         setError("Failed to load dashboard data. Please refresh.");
       } finally {
@@ -246,8 +243,7 @@ export default function LandlordDashboard() {
 
               const isRented = 
                 item.status === "RENTED" || 
-                item.status === "UNAVAILABLE" || 
-                item.isBooked === true;
+                item.status === "UNAVAILABLE" 
 
               return (
                 <div key={propertyId} className="py-3.5 flex items-center justify-between hover:bg-slate-50/50 px-2 rounded-2xl transition">

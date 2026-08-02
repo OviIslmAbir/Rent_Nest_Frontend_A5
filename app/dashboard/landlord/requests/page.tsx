@@ -27,8 +27,8 @@ export default function LandlordRequestsPage() {
 
         if (Array.isArray(res)) {
           setRequests(res);
-        } else if (res && Array.isArray((res as any).data)) {
-          setRequests((res as any).data);
+        } else if (res && typeof res === "object" && "data" in res && Array.isArray((res as { data: RentalRequest[] }).data)) {
+          setRequests((res as { data: RentalRequest[] }).data);
         } else {
           setRequests([]);
         }
@@ -58,7 +58,7 @@ export default function LandlordRequestsPage() {
       }
 
       setRequests((prev) =>
-        prev.map((req) => ((req.id || (req as any)._id) === id ? { ...req, status } : req))
+        prev.map((req) => ((req.id || (req as { _id?: string })._id) === id ? { ...req, status } : req))
       );
     } catch (error) {
       console.error("Failed to update status:", error);
@@ -112,18 +112,18 @@ export default function LandlordRequestsPage() {
         </div>
 
         <div className="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl w-fit flex-wrap">
-          {[
+          {([
             { label: "All", value: "ALL", count: counts.ALL },
             { label: "Pending", value: "PENDING", count: counts.PENDING },
             { label: "Approved", value: "APPROVED", count: counts.APPROVED },
             { label: "Rejected", value: "REJECTED", count: counts.REJECTED },
-          ].map((tab) => {
+          ] as const).map((tab) => {
             const isActive = statusFilter === tab.value;
 
             return (
               <button
                 key={tab.value}
-                onClick={() => setStatusFilter(tab.value as any)}
+                onClick={() => setStatusFilter(tab.value)}
                 className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
                   isActive
                     ? "bg-blue-600 text-white shadow-md shadow-blue-500/20"
@@ -158,16 +158,12 @@ export default function LandlordRequestsPage() {
       ) : (
         <div className="grid gap-4">
           {filteredRequests.map((req) => {
-            const reqId = req.id || (req as any)._id;
-            const price = req.property?.rentPrice || (req.property as any)?.price || 0;
+            const reqId = req.id || (req as { _id?: string })._id;
+            const price = req.property?.rentPrice || (req.property as { price?: number })?.price || 0;
             const tenantName = req.tenant?.name || req.tenant?.email || `Tenant ID: ${req.tenantId}`;
             const tenantEmail = req.tenant?.email;
             const propertyTitle = req.property?.title || `Property ID: ${req.propertyId}`;
-            const date = (req as any).createdAt
-              ? new Date((req as any).createdAt).toLocaleDateString()
-              : null;
-
-
+            const date = req.createdAt ? new Date(req.createdAt).toLocaleDateString() : null;
             const currentStatus = (req.status || "PENDING").toUpperCase();
             const isApprovedOrPaid = ["APPROVED", "PAID", "COMPLETED", "BOOKED"].includes(currentStatus);
             const isRejected = currentStatus === "REJECTED";
@@ -242,8 +238,8 @@ export default function LandlordRequestsPage() {
 
                       <Button
                         size="sm"
-                        onClick={() => handleStatusUpdate(reqId, "APPROVED")}
-                        disabled={actionLoadingId === reqId}
+                        onClick={() => (reqId ? handleStatusUpdate(reqId, "APPROVED") : undefined)}
+                        disabled={actionLoadingId === reqId || !reqId}
                         className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl h-9 px-4"
                       >
                         {actionLoadingId === reqId ? (
@@ -256,7 +252,7 @@ export default function LandlordRequestsPage() {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => handleStatusUpdate(reqId, "REJECTED")}
+                        onClick={() => (reqId ? handleStatusUpdate(reqId, "REJECTED") : undefined)}
                         disabled={actionLoadingId === reqId}
                         className="border-rose-200 text-rose-600 hover:bg-rose-50 font-bold rounded-xl h-9 px-4"
                       >

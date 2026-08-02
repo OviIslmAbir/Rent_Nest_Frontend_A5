@@ -2,6 +2,7 @@ import PayButton from "@/components/tenant/PayButton";
 import PaymentStatusToast from "@/components/tenant/PaymentStatusToast";
 import { getMyPayments } from "@/services/payment";
 import { getMyRentalRequests } from "@/services/rental";
+import { Payment, RentalRequest } from "@/types";
 import { Receipt, Clock, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 
 type Props = {
@@ -19,8 +20,8 @@ export default async function TenantPaymentsPage({ searchParams }: Props) {
     resolvedSearchParams.canceled === "true" ||
     resolvedSearchParams.cancelled === "true";
 
-  let payments: any[] = [];
-  let pendingRentals: any[] = [];
+  let payments: Payment[] = [];
+  let pendingRentals: RentalRequest[] = [];
   let errorMsg: string | null = null;
 
   try {
@@ -31,7 +32,7 @@ export default async function TenantPaymentsPage({ searchParams }: Props) {
 
     payments = paymentsRes?.data || [];
 
-    const allRentals = rentalsRes?.data || rentalsRes || [];
+    const allRentals: RentalRequest[] = rentalsRes?.data || rentalsRes || [];
 
     pendingRentals = Array.isArray(allRentals)
       ? allRentals.filter(
@@ -75,9 +76,9 @@ export default async function TenantPaymentsPage({ searchParams }: Props) {
           </p>
         ) : (
           <div className="divide-y divide-slate-100">
-            {pendingRentals.map((rental: any) => (
+            {pendingRentals.map((rental: RentalRequest) => (
               <div
-                key={rental.id || rental._id}
+                key={rental.id}
                 className="py-4 flex flex-col md:flex-row md:items-center justify-between gap-4"
               >
                 <div>
@@ -93,7 +94,7 @@ export default async function TenantPaymentsPage({ searchParams }: Props) {
                 </div>
 
                 <PayButton
-                  rentalRequestId={rental.id || rental._id}
+                  rentalRequestId={rental.id}
                   amount={rental.property?.rentPrice || 0}
                 />
               </div>
@@ -126,8 +127,8 @@ export default async function TenantPaymentsPage({ searchParams }: Props) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {payments.map((p: any) => (
-                  <tr key={p.id || p._id}>
+                {payments.map((p: Payment) => (
+                  <tr key={p.id}>
                     <td className="px-4 py-3.5 font-bold text-slate-800">
                       {p.rentalRequest?.property?.title || "Rental Payment"}
                     </td>
@@ -137,7 +138,9 @@ export default async function TenantPaymentsPage({ searchParams }: Props) {
                     <td className="px-4 py-3.5">
                       {p.paidAt
                         ? new Date(p.paidAt).toLocaleDateString()
-                        : new Date(p.createdAt).toLocaleDateString()}
+                        : p.createdAt
+                        ? new Date(p.createdAt).toLocaleDateString()
+                        : "N/A"}
                     </td>
                     <td className="px-4 py-3.5 font-bold text-slate-800">
                       ${p.amount?.toLocaleString()}

@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 
-const BASE_URL = typeof window !== "undefined" ? "" : (process.env.NEXT_PUBLIC_API_URL || "https://rentnest-nine.vercel.app");
+const BASE_URL = typeof window !== "undefined" ? "" : (process.env.BACK_END_URL);
 
 export default function EditProfileView() {
   const router = useRouter();

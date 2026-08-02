@@ -11,9 +11,10 @@ import {
 import Link from "next/link";
 
 import { getMyRentalRequests } from "@/services/rental";
+import { RentalRequest } from "@/types";
 
 export default async function TenantPage() {
-  let requests: any[] = [];
+  let requests: RentalRequest[] = [];
   let errorMsg: string | null = null;
 
   try {
@@ -26,12 +27,12 @@ export default async function TenantPage() {
     } else {
       requests = [];
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Dashboard fetch error:", error);
     errorMsg = "Failed to load dashboard data from server.";
   }
 
-  const isPaidOrActive = (r: any) =>
+  const isPaidOrActive = (r: RentalRequest) =>
     r.status === "ACTIVE" || r.payment?.status === "COMPLETED";
 
   const activeRentals = requests.filter(isPaidOrActive);
@@ -198,13 +199,13 @@ export default async function TenantPage() {
               No recent rental activities found.
             </p>
           ) : (
-            recentActivities.map((req: any) => {
+            recentActivities.map((req: RentalRequest) => {
               const active = isPaidOrActive(req);
               const statusText = active ? "ACTIVE / PAID" : req.status;
 
               return (
                 <div
-                  key={req._id || req.id}
+                  key={req.id}
                   className="flex items-center justify-between rounded-xl bg-slate-50 p-4 border border-slate-100"
                 >
                   <div>

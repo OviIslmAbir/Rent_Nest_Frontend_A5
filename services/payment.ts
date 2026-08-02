@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://rentnest-nine.vercel.app";
+const BASE_URL = process.env.BACK_END_URL;
 
 export const createPaymentSession = async (rentalRequestId: string) => {
   try {

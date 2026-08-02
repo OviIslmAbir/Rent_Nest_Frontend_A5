@@ -1,4 +1,4 @@
-const BASE_URL = typeof window !== "undefined" ? "" : "https://rentnest-nine.vercel.app";
+const BASE_URL = typeof window !== "undefined" ? "" : (process.env.BACK_END_URL);
 export interface RentalRequestItem {
   id: string;
   tenantId: string;

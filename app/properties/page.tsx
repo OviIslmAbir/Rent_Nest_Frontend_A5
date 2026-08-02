@@ -1,7 +1,7 @@
 import PropertyFilter from "@/components/properties/PropertyFilter";
 import PropertyGrid from "@/components/properties/PropertyGrid";
 import { getProperties } from "@/services/property";
-import { Building2, Sparkles } from "lucide-react";
+import { Building2} from "lucide-react";
 
 interface PropertiesPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -27,7 +27,6 @@ export default async function PropertiesPage({
 
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="inline-flex items-center gap-2 bg-[#0c1024] border border-cyan-500/30 px-4 py-1.5 rounded-full mb-6 shadow-sm shadow-cyan-500/10">
-            <Sparkles size={14} className="text-cyan-400 animate-pulse" />
             <span className="text-xs font-semibold tracking-wider text-cyan-400 uppercase">
               RentNest Listings
             </span>

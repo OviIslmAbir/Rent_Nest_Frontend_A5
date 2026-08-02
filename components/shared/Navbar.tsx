@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, ArrowRight, Sparkles, ChevronRight, LayoutDashboard } from "lucide-react";
+import { Menu, ArrowRight, ChevronRight, LayoutDashboard } from "lucide-react";
 
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -154,8 +154,7 @@ export default function Navbar({
                     <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-xl font-extrabold tracking-wider text-transparent">
                       RENT<span className="text-blue-600">NEST</span>
                     </span>
-                    <span className="flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full border border-blue-100">
-                      <Sparkles size={10} /> App
+                    <span className="flex items-center gap-1 text-[10px] font-bold tracking-widest uppercase bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full border border-blue-100"> App
                     </span>
                   </SheetTitle>
                 </SheetHeader>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Search, MapPin, Home, ArrowRight, ShieldCheck, Sparkles, Building2 } from "lucide-react";
+import { Search, MapPin, Home, ArrowRight, ShieldCheck, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Hero() {
@@ -48,7 +48,6 @@ export default function Hero() {
             whileHover={{ scale: 1.05 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-950/40 text-cyan-400 backdrop-blur-md shadow-[0_0_15px_rgba(6,182,212,0.15)] text-sm font-medium mb-6"
           >
-            <Sparkles className="h-4 w-4" />
             <span>Find Your Next Dream Home</span>
           </motion.div>
 
