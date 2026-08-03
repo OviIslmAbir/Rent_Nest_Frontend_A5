@@ -1,36 +1,233 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏠 RentNest – Rental Property Management Platform
 
-## Getting Started
+RentNest is a modern rental property management platform built with **Next.js 15**, **TypeScript**, **Tailwind CSS**, and **Shadcn UI**. It provides separate dashboards for **Tenant**, **Landlord**, and **Admin**, allowing users to manage properties, rental requests, payments, and profiles.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Live Demo
+
+- **Frontend:**https://assignment-5-eight-dusky.vercel.app/
+- **Backend API:** https://rentnest-nine.vercel.app
+
+---
+
+# ✨ Features
+
+## 👤 Authentication
+
+- JWT Authentication
+- Secure Cookie-based Login
+- Role-based Authorization
+- Protected Routes
+- Middleware Authentication
+
+---
+
+## 🏠 Tenant Features
+
+- Browse Properties
+- Property Details
+- Request Rental
+- View Rental Requests
+- Payment Integration
+- Payment History
+- Review Property
+- Update Profile
+
+---
+
+## 🏡 Landlord Features
+
+- Dashboard
+- Create Property
+- Update Property
+- Delete Property
+- View Rental Requests
+- Approve / Reject Requests
+- Manage Properties
+
+---
+
+## 🛡️ Admin Features
+
+- Dashboard
+- Manage Users
+- Manage Properties
+- Manage Rental Requests
+- System Overview
+
+---
+
+# 🛠️ Tech Stack
+
+### Frontend
+
+- Next.js 15 (App Router)
+- TypeScript
+- Tailwind CSS
+- Shadcn UI
+- Lucide React
+- React Hook Form
+- Zod
+- Framer Motion
+- Sonner
+- JWT Authentication
+
+### Backend
+
+- Node.js
+- Express.js
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- JWT
+- Bcrypt
+- Cookie Parser
+
+---
+
+# 📁 Folder Structure
+
+```
+app/
+│
+├── dashboard/
+│   ├── tenant/
+│   ├── landlord/
+│   └── admin/
+│
+├── properties/
+├── auth/
+│
+components/
+│
+services/
+│
+actions/
+│
+types/
+│
+middleware.ts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# 📌 API Used
 
-## Learn More
+## Authentication
 
-To learn more about Next.js, take a look at the following resources:
+- Register
+- Login
+- Get Profile
+- Update Profile
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Property
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Get Properties
+- Get Single Property
+- Create Property
+- Update Property
+- Delete Property
 
-## Deploy on Vercel
+## Rental
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Create Rental Request
+- Get Rental Requests
+- Get Single Rental Request
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Payment
+
+- Checkout
+- Payment Success
+- Payment History
+
+## Review
+
+- Create Review
+
+---
+
+# 💳 Payment Flow
+
+```
+Property Details
+
+      ↓
+
+Request Rental
+
+      ↓
+
+Landlord Approval
+
+      ↓
+
+Payment Checkout
+
+      ↓
+
+Payment Success
+
+      ↓
+
+Payment History
+```
+
+---
+
+# 🔐 Role-Based Access
+
+| Role | Permission |
+|-------|------------|
+| Tenant | Browse properties, request rentals, payments |
+| Landlord | Manage properties and rental requests |
+| Admin | Manage users, properties and system |
+
+---
+
+# 📷 Screenshots
+
+Add your screenshots here.
+
+```
+Home Page
+
+Dashboard
+
+Property Details
+
+Payment
+
+Admin Panel
+```
+
+---
+
+# 🌐 Deployment
+
+Frontend deployed on
+
+- Vercel
+
+Backend deployed on
+
+- Vercel
+
+---
+
+# 👨‍💻 Author
+
+**Abir Ovi**
+
+GitHub:
+https://github.com/OviIslmAbir
+
+Portfolio:
+https://my-portfolio62.netlify.app/
+
+---
+
+# 📄 License
+
+This project is developed for educational purposes (Assignment-5).
